@@ -38,3 +38,5 @@ gnn-decentralization/results_v16_legacy/*.npy
 gnn-decentralization/results_v16_legacy/nodesF.csv
 gnn-decentralization/results_v16_legacy/*.npy
 gnn-decentralization/results_v16_legacy/nodesF.csv
+.Rhistory
+.Rproj.user/
