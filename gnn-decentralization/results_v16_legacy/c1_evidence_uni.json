@@ -1,0 +1,86 @@
+{
+  "1w": {
+    "token": "UNI",
+    "scale": "1w",
+    "n_nodes": 9765,
+    "emb_dim": 16,
+    "gnn_input_feats": [
+      "in_deg",
+      "out_deg",
+      "in_deg_w",
+      "out_deg_w",
+      "counterparties",
+      "pagerank",
+      "betweenness"
+    ],
+    "cv": "StratifiedKFold(shuffle=True,seed=42)",
+    "bootstrap": "fit-once, resample predictions (B=1000)",
+    "purity_impl": "MPS blocked top-k",
+    "preprocessing": "drop balance from raw feat, THEN log1p+zscore on remaining 7",
+    "evidence1_balance_top5pct": {
+      "centrality": {
+        "auc": 0.7955,
+        "std": 0.0238
+      },
+      "raw_struct": {
+        "auc": 0.8127,
+        "std": 0.0187
+      },
+      "gnn": {
+        "auc": 0.8296,
+        "std": 0.0144
+      },
+      "cent_plus_gnn": {
+        "auc": 0.8456,
+        "std": 0.0118
+      }
+    },
+    "evidence1p_is_core_external": {
+      "n_pos": 57,
+      "n_total": 9765,
+      "centrality": {
+        "auc_cv": 0.5955,
+        "std": 0.0644,
+        "auc_point": 0.598,
+        "ci95": [
+          0.497,
+          0.684
+        ]
+      },
+      "raw_struct": {
+        "auc_cv": 0.8119,
+        "std": 0.0344,
+        "auc_point": 0.863,
+        "ci95": [
+          0.807,
+          0.906
+        ]
+      },
+      "gnn": {
+        "auc_cv": 0.8595,
+        "std": 0.051,
+        "auc_point": 0.898,
+        "ci95": [
+          0.852,
+          0.933
+        ]
+      }
+    },
+    "evidence2_neighbor_enrichment": {
+      "random_baseline": 0.0058,
+      "centrality": {
+        "purity": 0.0439,
+        "fold_enrichment": 7.5
+      },
+      "raw_struct": {
+        "purity": 0.0544,
+        "fold_enrichment": 9.3
+      },
+      "gnn": {
+        "purity": 0.093,
+        "fold_enrichment": 15.9
+      }
+    },
+    "timestamp": "2026-07-25T17:31:58"
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "1w": {
+    "scale": "1w",
+    "n_nodes": 9876,
+    "emb_dim": 16,
+    "gnn_input_feats": [
+      "in_deg",
+      "out_deg",
+      "in_deg_w",
+      "out_deg_w",
+      "counterparties",
+      "pagerank",
+      "betweenness"
+    ],
+    "cv": "StratifiedKFold(shuffle=True,seed=42)",
+    "bootstrap": "fit-once, resample predictions (B=1000)",
+    "purity_impl": "MPS blocked top-k",
+    "evidence1_balance_top5pct": {
+      "centrality": {
+        "auc": 0.7371,
+        "std": 0.0334
+      },
+      "raw_struct": {
+        "auc": 0.771,
+        "std": 0.0316
+      },
+      "gnn": {
+        "auc": 0.909,
+        "std": 0.0141
+      },
+      "cent_plus_gnn": {
+        "auc": 0.9271,
+        "std": 0.0124
+      }
+    },
+    "evidence1p_is_core_external": {
+      "n_pos": 74,
+      "n_total": 9876,
+      "centrality": {
+        "auc_cv": 0.5889,
+        "std": 0.0552,
+        "auc_point": 0.617,
+        "ci95": [
+          0.556,
+          0.674
+        ]
+      },
+      "raw_struct": {
+        "auc_cv": 0.8638,
+        "std": 0.0461,
+        "auc_point": 0.907,
+        "ci95": [
+          0.867,
+          0.942
+        ]
+      },
+      "gnn": {
+        "auc_cv": 0.9255,
+        "std": 0.035,
+        "auc_point": 0.959,
+        "ci95": [
+          0.938,
+          0.974
+        ]
+      }
+    },
+    "evidence2_neighbor_enrichment": {
+      "random_baseline": 0.0075,
+      "centrality": {
+        "purity": 0.0419,
+        "fold_enrichment": 5.6
+      },
+      "raw_struct": {
+        "purity": 0.1176,
+        "fold_enrichment": 15.7
+      },
+      "gnn": {
+        "purity": 0.2432,
+        "fold_enrichment": 32.5
+      }
+    },
+    "timestamp": "2026-06-29T17:06:41"
+  },
+  "5w": {
+    "scale": "5w",
+    "n_nodes": 49587,
+    "emb_dim": 16,
+    "gnn_input_feats": [
+      "in_deg",
+      "out_deg",
+      "in_deg_w",
+      "out_deg_w",
+      "counterparties",
+      "pagerank",
+      "betweenness"
+    ],
+    "cv": "StratifiedKFold(shuffle=True,seed=42)",
+    "bootstrap": "fit-once, resample predictions (B=1000)",
+    "purity_impl": "MPS blocked top-k",
+    "evidence1_balance_top5pct": {
+      "centrality": {
+        "auc": 0.7796,
+        "std": 0.01
+      },
+      "raw_struct": {
+        "auc": 0.8093,
+        "std": 0.0102
+      },
+      "gnn": {
+        "auc": 0.8488,
+        "std": 0.0063
+      },
+      "cent_plus_gnn": {
+        "auc": 0.869,
+        "std": 0.0065
+      }
+    },
+    "evidence1p_is_core_external": {
+      "n_pos": 86,
+      "n_total": 49587,
+      "centrality": {
+        "auc_cv": 0.6338,
+        "std": 0.0487,
+        "auc_point": 0.635,
+        "ci95": [
+          0.565,
+          0.698
+        ]
+      },
+      "raw_struct": {
+        "auc_cv": 0.9072,
+        "std": 0.0398,
+        "auc_point": 0.931,
+        "ci95": [
+          0.897,
+          0.959
+        ]
+      },
+      "gnn": {
+        "auc_cv": 0.9229,
+        "std": 0.016,
+        "auc_point": 0.957,
+        "ci95": [
+          0.937,
+          0.974
+        ]
+      }
+    },
+    "evidence2_neighbor_enrichment": {
+      "random_baseline": 0.0017,
+      "centrality": {
+        "purity": 0.0233,
+        "fold_enrichment": 13.4
+      },
+      "raw_struct": {
+        "purity": 0.1128,
+        "fold_enrichment": 65.0
+      },
+      "gnn": {
+        "purity": 0.1767,
+        "fold_enrichment": 101.9
+      }
+    },
+    "timestamp": "2026-06-29T17:07:03"
+  },
+  "64w": {
+    "scale": "64w",
+    "n_nodes": 641278,
+    "emb_dim": 16,
+    "gnn_input_feats": [
+      "in_deg",
+      "out_deg",
+      "in_deg_w",
+      "out_deg_w",
+      "counterparties",
+      "pagerank",
+      "betweenness"
+    ],
+    "cv": "StratifiedKFold(shuffle=True,seed=42)",
+    "bootstrap": "fit-once, resample predictions (B=1000)",
+    "purity_impl": "MPS blocked top-k",
+    "evidence1_balance_top5pct": {
+      "centrality": {
+        "auc": 0.8409,
+        "std": 0.0013
+      },
+      "raw_struct": {
+        "auc": 0.8802,
+        "std": 0.0049
+      },
+      "gnn": {
+        "auc": 0.946,
+        "std": 0.0006
+      },
+      "cent_plus_gnn": {
+        "auc": 0.9495,
+        "std": 0.0007
+      }
+    },
+    "evidence1p_is_core_external": {
+      "n_pos": 161,
+      "n_total": 641278,
+      "centrality": {
+        "auc_cv": 0.6764,
+        "std": 0.0728,
+        "auc_point": 0.676,
+        "ci95": [
+          0.625,
+          0.727
+        ]
+      },
+      "raw_struct": {
+        "auc_cv": 0.7413,
+        "std": 0.0401,
+        "auc_point": 0.761,
+        "ci95": [
+          0.711,
+          0.808
+        ]
+      },
+      "gnn": {
+        "auc_cv": 0.7625,
+        "std": 0.0526,
+        "auc_point": 0.79,
+        "ci95": [
+          0.746,
+          0.835
+        ]
+      }
+    },
+    "evidence2_neighbor_enrichment": {
+      "random_baseline": 0.0003,
+      "centrality": {
+        "purity": 0.0068,
+        "fold_enrichment": 27.2
+      },
+      "raw_struct": {
+        "purity": 0.0578,
+        "fold_enrichment": 230.1
+      },
+      "gnn": {
+        "purity": 0.1298,
+        "fold_enrichment": 517.1
+      }
+    },
+    "timestamp": "2026-06-29T17:10:49"
+  }
+}

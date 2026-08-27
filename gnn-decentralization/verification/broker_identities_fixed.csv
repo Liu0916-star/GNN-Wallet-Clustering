@@ -1,0 +1,29 @@
+token,address,in_LINK,in_UNI,counterparties,seed_frequency,verified_identity,evidence,note,discovered_in
+BOTH,0x7f54f05635d15cde17a49502fedb9d1803a3be8a,True,True,313,0.9,Suspected 0x Protocol router,verified source; deployer deployer.zeroexprot...,no public name tag,LINK
+UNI,0x74de5d4fcbf63e00296fd95d33236b9794016631,False,True,277,0.8,MetaMask: Swaps Spender,Etherscan name tag,,LINK
+LINK,0x111111125421ca6dc452d289314280a0f8842a65,True,False,239,0.6,1inch: Aggregation Router V6,Etherscan name tag,postdates 2023 label snapshot,LINK
+BOTH,0x225a38bc71102999dd13478bfabd7c4d53f2dc17,True,True,177,0.9,Uniswap X: Rizzolver (solver),Etherscan name tag,postdates 2023 label snapshot,LINK
+LINK,0x6a000f20005980200259b80c5102003040001068,True,False,120,0.5,Velora: Augustus V6.2,Etherscan name tag,,LINK
+BOTH,0x66a9893cc07d91d95644aedd05d03f95e1dba8af,True,True,105,0.6,Uniswap V4: Universal Router,Etherscan name tag,postdates 2023 label snapshot,LINK
+LINK,0x28b1dc1a5e3699a428bc51d234dfab7c9cb2a183,True,False,91,0.5,OKX: DEX Router 6,Etherscan name tag,,LINK
+NEITHER,0xd78d199f8c402e7b5cc2abe278df0412400a3bae,False,False,70,,Mayan: Swift v2 Destination,Etherscan name tag,,LINK
+LINK,0x50d3865a63d52c0a54e4679949647ea752107390,True,False,70,1.0,MEV Bot,Etherscan name tag,extractive automation,LINK
+BOTH,0xbc1d9760bd6ca468ca9fb5ff2cfbeac35d86c973,True,True,48,0.6,Bitget: DEX Aggregator,Etherscan name tag,,LINK
+BOTH,0xd226997439ecfbeff8e110c8c78c8a7eefd19f89,True,True,38,0.7,MEV Bot,Etherscan name tag,extractive automation,LINK
+LINK,0x0000000000efa780a8e6f50fc5de9c1497bfd175,True,False,23,0.6,MEV Bot,Etherscan name tag,extractive automation,LINK
+NEITHER,0xa8195d26a8db123de6eeb9accb3cfd940f31bcdd,False,False,17,,Fake_Phishing (flagged),Etherscan flag,adversarial contract,LINK
+NEITHER,0x51e040bbf50cd966d2b8dab275f648a331c2ef49,False,False,14,,Binance Deposit,Etherscan name tag,,LINK
+BOTH,0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae,True,True,244,1.0,LI.FI: LiFi Diamond,Etherscan name tag,cross-chain bridge aggregator; 3.7M lifetime transfers,UNI
+UNI,0x7f51c134230eb9e5aba42bc364d3d3eba26d9712,False,True,101,0.6,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI
+UNI,0xce937da1ffd21673aa1e063459873f30189a2193,False,True,99,0.5,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI
+UNI,0x06cff7088619c7178f5e14f0b119458d08d2f5ef,False,True,44,0.2,MEV Bot,Etherscan name tag,"541,629 transactions",UNI
+NEITHER,0x08baf37cfeaff1e8e2a8695ed9b7dc3cf96beb9d,False,False,32,,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI
+LINK,0x75cf59a923a2649b84fa569bb97ea9694b6f26e4,True,False,31,0.4,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI
+LINK,0xb9e9e795fd530314663f779f7f57950c6bc1eb4b,True,False,29,0.4,Compromised contract,Etherscan vulnerability warning,adversarial / compromised,UNI
+NEITHER,0x49e55995ef73717895a638074de5af89fa1e301c,False,False,24,,MEV Bot,Etherscan name tag,"53,312 transactions",UNI
+UNI,0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f,False,True,UNI 183 / LINK 181,0.9,Unlabelled routing contract,ERC-20 Token Transfers tab,"Relay Solver / Ekubo / Uniswap counterparties; 9,998 ERC-20 transfers",BOTH
+BOTH,0x8f10b468b06c6fd214b65f87778827f7d113f996,True,True,UNI 108 / LINK 132,0.6,Unlabelled routing contract,ERC-20 Token Transfers tab,"Transactions tab shows 7; ERC-20 transfers >10,000",BOTH
+BOTH,0xebe0fa42523f69ea1e97f5b08282654c19c2c0ee,True,True,UNI 47 / LINK 29,0.6,Unlabelled routing contract,ERC-20 Token Transfers tab,"Rainbow Router / Uniswap V3; >10,000 transfers",BOTH
+BOTH,0x603206d6105217dd972e4ab30676a220ca393346,True,True,UNI 45 / LINK 48,0.9,Unlabelled routing contract,ERC-20 Token Transfers tab,"Transactions tab shows 2; ERC-20 transfers >10,000; Disperse.app + MEV",BOTH
+BOTH,0x3611b82c7b13e72b26eb0e9be0613bee7a45ac7c,True,True,UNI 44 / LINK 44,0.6,Unlabelled routing contract,ERC-20 Token Transfers tab,"Magpie Stargate bridge; largest multichain balance ($5,270)",BOTH
+NEITHER,0x399740157391a9f1bf4e9921a8834f9bc8f2678e,False,False,UNI 40 / LINK 70,,Unlabelled routing contract,ERC-20 Token Transfers tab,1inch Fusion Resolver counterparty; deployed by deploy-hub.eth,BOTH

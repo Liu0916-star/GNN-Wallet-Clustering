@@ -1,0 +1,43 @@
+token,address,in_LINK,in_UNI,counterparties,seed_frequency,verified_identity,evidence,note,discovered_in,betweenness
+BOTH,0x7f54f05635d15cde17a49502fedb9d1803a3be8a,True,True,313,0.9,Suspected 0x Protocol router,verified source; deployer deployer.zeroexprot...,no public name tag,LINK,
+UNI,0x74de5d4fcbf63e00296fd95d33236b9794016631,False,True,277,0.8,MetaMask: Swaps Spender,Etherscan name tag,,LINK,
+LINK,0x111111125421ca6dc452d289314280a0f8842a65,True,False,239,0.6,1inch: Aggregation Router V6,Etherscan name tag,postdates 2023 label snapshot,LINK,
+BOTH,0x225a38bc71102999dd13478bfabd7c4d53f2dc17,True,True,177,0.9,Uniswap X: Rizzolver (solver),Etherscan name tag,postdates 2023 label snapshot,LINK,
+LINK,0x6a000f20005980200259b80c5102003040001068,True,False,120,0.5,Velora: Augustus V6.2,Etherscan name tag,,LINK,
+BOTH,0x66a9893cc07d91d95644aedd05d03f95e1dba8af,True,True,105,0.6,Uniswap V4: Universal Router,Etherscan name tag,postdates 2023 label snapshot,LINK,
+LINK,0x28b1dc1a5e3699a428bc51d234dfab7c9cb2a183,True,False,91,0.5,OKX: DEX Router 6,Etherscan name tag,,LINK,
+NEITHER,0xd78d199f8c402e7b5cc2abe278df0412400a3bae,False,False,70,,Mayan: Swift v2 Destination,Etherscan name tag,,LINK,
+LINK,0x50d3865a63d52c0a54e4679949647ea752107390,True,False,70,1.0,MEV Bot,Etherscan name tag,extractive automation,LINK,
+BOTH,0xbc1d9760bd6ca468ca9fb5ff2cfbeac35d86c973,True,True,48,0.6,Bitget: DEX Aggregator,Etherscan name tag,,LINK,
+BOTH,0xd226997439ecfbeff8e110c8c78c8a7eefd19f89,True,True,38,0.7,MEV Bot,Etherscan name tag,extractive automation,LINK,
+LINK,0x0000000000efa780a8e6f50fc5de9c1497bfd175,True,False,23,0.6,MEV Bot,Etherscan name tag,extractive automation,LINK,
+NEITHER,0xa8195d26a8db123de6eeb9accb3cfd940f31bcdd,False,False,17,,Fake_Phishing (flagged),Etherscan flag,adversarial contract,LINK,
+NEITHER,0x51e040bbf50cd966d2b8dab275f648a331c2ef49,False,False,14,,Binance Deposit,Etherscan name tag,,LINK,
+BOTH,0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae,True,True,244,1.0,LI.FI: LiFi Diamond,Etherscan name tag,cross-chain bridge aggregator; 3.7M lifetime transfers,UNI,
+UNI,0x7f51c134230eb9e5aba42bc364d3d3eba26d9712,False,True,101,0.6,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI,
+UNI,0xce937da1ffd21673aa1e063459873f30189a2193,False,True,99,0.5,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI,
+UNI,0x06cff7088619c7178f5e14f0b119458d08d2f5ef,False,True,44,0.2,MEV Bot,Etherscan name tag,"541,629 transactions",UNI,
+NEITHER,0x08baf37cfeaff1e8e2a8695ed9b7dc3cf96beb9d,False,False,32,,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI,
+LINK,0x75cf59a923a2649b84fa569bb97ea9694b6f26e4,True,False,31,0.4,Unlabelled contract,"ERC-20 transfers >10,000",no name tag,UNI,
+LINK,0xb9e9e795fd530314663f779f7f57950c6bc1eb4b,True,False,29,0.4,Compromised contract,Etherscan vulnerability warning,adversarial / compromised,UNI,
+NEITHER,0x49e55995ef73717895a638074de5af89fa1e301c,False,False,24,,MEV Bot,Etherscan name tag,"53,312 transactions",UNI,
+UNI,0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f,False,True,UNI 183 / LINK 181,0.9,Unlabelled routing contract,ERC-20 Token Transfers tab,"Relay Solver / Ekubo / Uniswap counterparties; 9,998 ERC-20 transfers",BOTH,
+BOTH,0x8f10b468b06c6fd214b65f87778827f7d113f996,True,True,UNI 108 / LINK 132,0.6,Unlabelled routing contract,ERC-20 Token Transfers tab,"Transactions tab shows 7; ERC-20 transfers >10,000",BOTH,
+BOTH,0xebe0fa42523f69ea1e97f5b08282654c19c2c0ee,True,True,UNI 47 / LINK 29,0.6,Unlabelled routing contract,ERC-20 Token Transfers tab,"Rainbow Router / Uniswap V3; >10,000 transfers",BOTH,
+BOTH,0x603206d6105217dd972e4ab30676a220ca393346,True,True,UNI 45 / LINK 48,0.9,Unlabelled routing contract,ERC-20 Token Transfers tab,"Transactions tab shows 2; ERC-20 transfers >10,000; Disperse.app + MEV",BOTH,
+BOTH,0x3611b82c7b13e72b26eb0e9be0613bee7a45ac7c,True,True,UNI 44 / LINK 44,0.6,Unlabelled routing contract,ERC-20 Token Transfers tab,"Magpie Stargate bridge; largest multichain balance ($5,270)",BOTH,
+NEITHER,0x399740157391a9f1bf4e9921a8834f9bc8f2678e,False,False,UNI 40 / LINK 70,,Unlabelled routing contract,ERC-20 Token Transfers tab,1inch Fusion Resolver counterparty; deployed by deploy-hub.eth,BOTH,
+BOTH,0x4c3ccc98c01103be72bcfd29e1d2454c98d1a6e3,True,True,230,0.9,Unlabelled routing contract,No name tag; bytecode unverified; methods Execute/Withdraw; counterparties are DEX pools and aggregators,Deployer 0x56E44874...0FBDC6dcF also deployed 0x990636ec... (Etherscan: 1inch Aggregation Executor 5). Likely an unlabelled 1inch executor but not asserted; kept unlabelled so entity merging stays a lower bound. Largest cross-token broker by counterparties.,,0.010719
+BOTH,0x4c82d1fbfe28c977cbb58d8c7ff8fcf9f70a2cca,True,True,102,0.5,Uniswap: Universal Router (v2 ChainedActions),Verified source Exact Match; contract UniversalRouter; EIP712('UniversalRouter'|'2'); imports modules/uniswap/v4/V4SwapRouter.sol and UniswapImmutables(v2Factory|v3Factory|pairInitCodeHash|poolInitCodeHash); 960687 txns,Non-vanilla variant: constructor includes ChainedActions(params.spokePool) i.e. Across Protocol integration. Distinct deployment from 0x66a9893c... already in this table.,,0.001466
+LINK,0xf48a3f7c0575c85cf4529aa220caf3c055773f1c,True,False,127,0.7,0x Protocol: MainnetSettler,Verified source Exact Match; contract MainnetSettler; compiler v0.8.33; deployer is deployer.zeroexprot... (0x Protocol official),Strong evidence: official deployer plus verified contract name.,,0.003144
+LINK,0x63242a4ea82847b20e506b63b0e2e2eff0cc6cb0,True,False,89,0.4,KyberSwap: Aggregator Executor,Etherscan public name tag with #KyberSwap and #DEX tags; proxy contract; creator 0x697161A9...50F993cbc,Address is 42 chars as shown in the Etherscan URL. Counterparties include LI.FI Diamond and Lido wstETH.,,0.00567
+UNI,0x990636ecb3ff04d33d92e970d3d588bf5cd8d086,False,True,81,0.4,1inch: Aggregation Executor 5,Etherscan public name tag with #1inch tag,Shares deployer 0x56E44874...0FBDC6dcF with 0x4c3ccc98... in this table.,,0.002995
+LINK,0x0e16d4d4281c65f37da7481c57d5d4953d64c74d,True,False,71,0.8,Unlabelled routing contract,No name tag; unverified; routing path USDC -> Balancer -> WETH -> Bitget DEX Aggregator; also interacts with LI.FI Diamond,Transactions tab shows 3 external txns while ERC-20 transfers are frequent; the two tabs are not comparable.,,0.001461
+LINK,0xc10ee9031f2a0b84766a86b55a8d90f357910fb4,True,False,68,0.6,Unlabelled routing contract,No name tag; unverified with proxy hint; path LI.FI -> USDC -> Uniswap V4 Pool Manager -> GROW -> LI.FI,,,0.001317
+LINK,0x365084b05fa7d5028346bd21d842ed0601bab5b8,True,False,62,0.3,Unlabelled routing contract,No name tag; unverified proxy; interacts with Uniswap V4 Pool Manager and Uniswap V3 methods,,,0.000249
+LINK,0x09ad820aac5779683b481c4674208a4e1b024afa,True,False,56,0.7,Unlabelled DEX aggregator,Source verified only as Similar Match to 0x1af18F06...7e6cFd920 with a constructor-argument warning; proxy heuristic; contract name DexAggregatorCore is generic (OpenZeppelin 4.8.2 LibAsset.sol LibRouter.sol); no name tag,Deliberately not attributed to any protocol: a Similar Match does not establish provenance.,,0.000244
+LINK,0x595c31c6108babc43caa81ab759a4aae91801a82,True,False,43,0.3,Unlabelled routing contract,No name tag; unverified; swaps via Bitget DEX Aggregator (WLFI) and Bebop Blend (USDT),,,0.000285
+LINK,0x420cafeaa7a2e44a404340397ac45b2f55fc8f73,True,False,42,0.3,MEV Bot,No name tag; 25129 txns all via unknown hex selectors (0x16aeafdf 0x168eb72d) invoked by a single caller 0x619C5C0D...5795F3Fa0,Generic label: not merged with any other MEV Bot during entity resolution.,,0.000484
+LINK,0x2c242c8da2c5b25191bb6d2d88b8703446d28fc6,True,False,33,0.3,MEV Bot,No name tag; 131347 txns; repeated WETH<->WBTC swaps across Uniswap V3 WBTC 4 and Uniswap V4 Pool Manager (cross-pool arbitrage),Generic label: not merged during entity resolution.,,1e-06
+LINK,0x88cc0800464fcef3e643a369e8a0532990995eee,True,False,28,0.5,MEV Bot,No name tag; unverified proxy; 102498 txns; continuous withdrawals to a KuCoin deposit address,Generic label: not merged during entity resolution.,,0.000151
+LINK,0x818acad67efa6a1b3936bd682b5a6bc9dcd864f8,True,False,7,0.7,MEV Bot,No name tag; creator carries the Etherscan tag MEV Builder; chained swaps WETH->SWELL->WETH and WETH->cvxCRV->CRV->cvxCRV across Uniswap V3 SushiSwap and Convex,Weakest member of the broker set: 7 counterparties and betweenness rounds to zero at six decimals.,,0.0

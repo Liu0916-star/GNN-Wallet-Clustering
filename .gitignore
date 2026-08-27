@@ -1,0 +1,40 @@
+# ---- 原始数据（约 700 MB，用 extract_data.sql 复现）----
+gnn-decentralization/data/*.csv
+
+# ---- 生成物 ----
+gnn-decentralization/results/*
+!gnn-decentralization/results/.gitkeep
+gnn-decentralization/figures/*.pdf
+
+# ---- 标签快照（3 MB，建议提交以保证可复现；如仓库有大小顾虑再忽略）----
+# gnn-decentralization/labels/*.json
+
+# ---- LaTeX 中间文件 ----
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.spl
+paper/*.pdf
+!paper/figures/*.pdf
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+
+# ---- 系统 ----
+.DS_Store
+
+# ---- v16 冻结结果里的大文件（150 MB）----
+# 这些是特征矩阵与节点表，用 01_build_graph.py 可重新生成；
+# 仓库只保留 legacy 的 json/csv 汇总结果用于修正前后对比。
+gnn-decentralization/results_v16_legacy/*.npy
+gnn-decentralization/results_v16_legacy/nodesF.csv
+gnn-decentralization/results_v16_legacy/*.npy
+gnn-decentralization/results_v16_legacy/nodesF.csv

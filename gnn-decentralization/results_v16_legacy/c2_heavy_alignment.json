@@ -1,0 +1,147 @@
+{
+  "n_windows": 13,
+  "anomaly_windows": [
+    6
+  ],
+  "ref_window": 0,
+  "alignment_diag": [
+    {
+      "week": 1,
+      "anchors": 2234,
+      "resid_before": 74.21,
+      "resid_after": 62.59
+    },
+    {
+      "week": 2,
+      "anchors": 2278,
+      "resid_before": 81.2,
+      "resid_after": 66.15
+    },
+    {
+      "week": 3,
+      "anchors": 2378,
+      "resid_before": 82.85,
+      "resid_after": 69.76
+    },
+    {
+      "week": 4,
+      "anchors": 2208,
+      "resid_before": 74.78,
+      "resid_after": 61.29
+    },
+    {
+      "week": 5,
+      "anchors": 2119,
+      "resid_before": 76.71,
+      "resid_after": 60.67
+    },
+    {
+      "week": 6,
+      "anchors": 2083,
+      "resid_before": 97.93,
+      "resid_after": 67.77
+    },
+    {
+      "week": 7,
+      "anchors": 2005,
+      "resid_before": 72.66,
+      "resid_after": 58.82
+    },
+    {
+      "week": 8,
+      "anchors": 2176,
+      "resid_before": 70.62,
+      "resid_after": 62.06
+    },
+    {
+      "week": 9,
+      "anchors": 2283,
+      "resid_before": 74.62,
+      "resid_after": 64.2
+    },
+    {
+      "week": 10,
+      "anchors": 2390,
+      "resid_before": 73.34,
+      "resid_after": 63.54
+    },
+    {
+      "week": 11,
+      "anchors": 2078,
+      "resid_before": 72.73,
+      "resid_after": 58.4
+    },
+    {
+      "week": 12,
+      "anchors": 2038,
+      "resid_before": 81.46,
+      "resid_after": 60.9
+    }
+  ],
+  "alignment_ok": "12/12",
+  "min_anchors": 2005,
+  "n_persistent_elite": 574,
+  "elite_drift": [
+    {
+      "from": 0,
+      "to": 1,
+      "drift": 1.0986
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "drift": 1.1427
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "drift": 1.2791
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "drift": 1.0903
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "drift": 1.0782
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "drift": 1.3856
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "drift": 1.3558
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "drift": 1.0854
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "drift": 1.1588
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "drift": 1.1268
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "drift": 1.1732
+    },
+    {
+      "from": 11,
+      "to": 12,
+      "drift": 1.2343
+    }
+  ],
+  "normal_drift_mean": 1.1467
+}

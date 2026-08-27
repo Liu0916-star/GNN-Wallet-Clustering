@@ -1,0 +1,19 @@
+{
+  "scale": "1w",
+  "baseline": "node2vec(dim16,wl80,nw10,workers=1)",
+  "is_core_auc": {
+    "gnn": 0.9239,
+    "node2vec": 0.8904,
+    "centrality": 0.5889
+  },
+  "balance_auc": {
+    "gnn": 0.9107,
+    "node2vec": 0.8971,
+    "centrality": 0.7371
+  },
+  "enrichment": {
+    "gnn": 32.8,
+    "node2vec": 31.0,
+    "centrality": 5.6
+  }
+}

@@ -1,0 +1,364 @@
+{
+  "token": "UNI",
+  "n_nodes": 9765,
+  "n_clusters": 8,
+  "typology": {
+    "cluster_0": {
+      "name": "散户/一般簇",
+      "size": 1526,
+      "core_rate": 0.0026,
+      "core_n": 4,
+      "med_counterparties": 2.0,
+      "med_balance": 0.0,
+      "med_betweenness": 6e-06,
+      "med_deg": 2.0,
+      "top_labels": {
+        "Other-labeled": 8,
+        "CEX": 3,
+        "DEX": 1
+      }
+    },
+    "cluster_1": {
+      "name": "散户/一般簇",
+      "size": 607,
+      "core_rate": 0.0,
+      "core_n": 0,
+      "med_counterparties": 3.0,
+      "med_balance": 0.0,
+      "med_betweenness": 2e-06,
+      "med_deg": 3.0,
+      "top_labels": {
+        "Other-labeled": 1
+      }
+    },
+    "cluster_2": {
+      "name": "一般活跃簇",
+      "size": 2166,
+      "core_rate": 0.0148,
+      "core_n": 32,
+      "med_counterparties": 5.0,
+      "med_balance": 0.0,
+      "med_betweenness": 8e-06,
+      "med_deg": 5.0,
+      "top_labels": {
+        "DEX": 26,
+        "Bridge": 4,
+        "Other-labeled": 4
+      }
+    },
+    "cluster_3": {
+      "name": "核心基础设施簇(DEX主导,核心率7.4%) / 巨鲸/囤币簇(余额中位1196)",
+      "size": 175,
+      "core_rate": 0.0743,
+      "core_n": 13,
+      "med_counterparties": 72.0,
+      "med_balance": 1196.5,
+      "med_betweenness": 0.002637,
+      "med_deg": 88.0,
+      "top_labels": {
+        "DEX": 7,
+        "Other-labeled": 7,
+        "CEX": 4
+      }
+    },
+    "cluster_4": {
+      "name": "散户/一般簇",
+      "size": 861,
+      "core_rate": 0.0035,
+      "core_n": 3,
+      "med_counterparties": 3.0,
+      "med_balance": 0.0,
+      "med_betweenness": 3.8e-05,
+      "med_deg": 3.0,
+      "top_labels": {
+        "CEX": 3,
+        "Other-labeled": 2
+      }
+    },
+    "cluster_5": {
+      "name": "散户/一般簇",
+      "size": 2160,
+      "core_rate": 0.0019,
+      "core_n": 4,
+      "med_counterparties": 2.0,
+      "med_balance": 0.0,
+      "med_betweenness": 0.0,
+      "med_deg": 2.0,
+      "top_labels": {
+        "Other-labeled": 9,
+        "DEX": 2,
+        "Bridge": 1
+      }
+    },
+    "cluster_6": {
+      "name": "散户/一般簇",
+      "size": 570,
+      "core_rate": 0.0,
+      "core_n": 0,
+      "med_counterparties": 2.0,
+      "med_balance": 0.0,
+      "med_betweenness": 3.1e-05,
+      "med_deg": 2.0,
+      "top_labels": {}
+    },
+    "cluster_7": {
+      "name": "散户/一般簇",
+      "size": 1700,
+      "core_rate": 0.0006,
+      "core_n": 1,
+      "med_counterparties": 2.0,
+      "med_balance": 0.0,
+      "med_betweenness": 2e-06,
+      "med_deg": 2.0,
+      "top_labels": {
+        "Other-labeled": 1,
+        "DEX": 1
+      }
+    }
+  },
+  "hidden_brokers": {
+    "gnn_def": {
+      "count": 29,
+      "definition": "is_core-classifier prob top1% & balance<=median & unlabeled",
+      "brokers": [
+        {
+          "address": "0xb9e9e795fd530314663f779f7f57950c6bc1eb4b",
+          "core_score": 0.9618,
+          "balance": 0.0,
+          "counterparties": 29,
+          "betweenness": 0.000652,
+          "cluster": 2
+        },
+        {
+          "address": "0xbc1d9760bd6ca468ca9fb5ff2cfbeac35d86c973",
+          "core_score": 0.9686,
+          "balance": 0.0,
+          "counterparties": 58,
+          "betweenness": 0.001874,
+          "cluster": 3
+        },
+        {
+          "address": "0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f",
+          "core_score": 0.9918,
+          "balance": 0.0,
+          "counterparties": 183,
+          "betweenness": 0.011595,
+          "cluster": 3
+        },
+        {
+          "address": "0x399740157391a9f1bf4e9921a8834f9bc8f2678e",
+          "core_score": 0.9686,
+          "balance": 0.0,
+          "counterparties": 40,
+          "betweenness": 0.00106,
+          "cluster": 3
+        },
+        {
+          "address": "0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae",
+          "core_score": 0.978,
+          "balance": 0.0,
+          "counterparties": 244,
+          "betweenness": 0.021884,
+          "cluster": 3
+        },
+        {
+          "address": "0x225a38bc71102999dd13478bfabd7c4d53f2dc17",
+          "core_score": 1.0,
+          "balance": 0.0,
+          "counterparties": 209,
+          "betweenness": 0.01132,
+          "cluster": 3
+        },
+        {
+          "address": "0x111111125421ca6dc452d289314280a0f8842a65",
+          "core_score": 0.9912,
+          "balance": 0.0,
+          "counterparties": 154,
+          "betweenness": 0.01432,
+          "cluster": 3
+        },
+        {
+          "address": "0x3611b82c7b13e72b26eb0e9be0613bee7a45ac7c",
+          "core_score": 0.9714,
+          "balance": 0.0,
+          "counterparties": 44,
+          "betweenness": 7.7e-05,
+          "cluster": 2
+        },
+        {
+          "address": "0x06cff7088619c7178f5e14f0b119458d08d2f5ef",
+          "core_score": 0.9742,
+          "balance": 0.0,
+          "counterparties": 44,
+          "betweenness": 0.000294,
+          "cluster": 2
+        },
+        {
+          "address": "0xd226997439ecfbeff8e110c8c78c8a7eefd19f89",
+          "core_score": 0.9771,
+          "balance": 0.0,
+          "counterparties": 45,
+          "betweenness": 0.0001,
+          "cluster": 2
+        },
+        {
+          "address": "0x49e55995ef73717895a638074de5af89fa1e301c",
+          "core_score": 0.9631,
+          "balance": 0.0,
+          "counterparties": 24,
+          "betweenness": 7.6e-05,
+          "cluster": 2
+        },
+        {
+          "address": "0x4c3ccc98c01103be72bcfd29e1d2454c98d1a6e3",
+          "core_score": 0.9792,
+          "balance": 0.0,
+          "counterparties": 135,
+          "betweenness": 0.006378,
+          "cluster": 3
+        },
+        {
+          "address": "0xce937da1ffd21673aa1e063459873f30189a2193",
+          "core_score": 0.9645,
+          "balance": 0.0,
+          "counterparties": 99,
+          "betweenness": 0.003232,
+          "cluster": 3
+        },
+        {
+          "address": "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+          "core_score": 0.9807,
+          "balance": 0.0,
+          "counterparties": 141,
+          "betweenness": 0.006168,
+          "cluster": 3
+        },
+        {
+          "address": "0x7f54f05635d15cde17a49502fedb9d1803a3be8a",
+          "core_score": 0.9714,
+          "balance": 0.0,
+          "counterparties": 300,
+          "betweenness": 0.025641,
+          "cluster": 3
+        },
+        {
+          "address": "0xd78d199f8c402e7b5cc2abe278df0412400a3bae",
+          "core_score": 0.9907,
+          "balance": 0.0,
+          "counterparties": 60,
+          "betweenness": 0.001765,
+          "cluster": 3
+        },
+        {
+          "address": "0x75cf59a923a2649b84fa569bb97ea9694b6f26e4",
+          "core_score": 0.9652,
+          "balance": 0.0,
+          "counterparties": 31,
+          "betweenness": 0.000592,
+          "cluster": 2
+        },
+        {
+          "address": "0xebe0fa42523f69ea1e97f5b08282654c19c2c0ee",
+          "core_score": 0.9722,
+          "balance": 0.0,
+          "counterparties": 47,
+          "betweenness": 0.000148,
+          "cluster": 2
+        },
+        {
+          "address": "0x08baf37cfeaff1e8e2a8695ed9b7dc3cf96beb9d",
+          "core_score": 0.9708,
+          "balance": 0.0,
+          "counterparties": 32,
+          "betweenness": 0.000101,
+          "cluster": 2
+        },
+        {
+          "address": "0x8f10b468b06c6fd214b65f87778827f7d113f996",
+          "core_score": 0.9682,
+          "balance": 0.0,
+          "counterparties": 108,
+          "betweenness": 0.00512,
+          "cluster": 3
+        },
+        {
+          "address": "0x4c82d1fbfe28c977cbb58d8c7ff8fcf9f70a2cca",
+          "core_score": 0.9902,
+          "balance": 0.0,
+          "counterparties": 102,
+          "betweenness": 0.001479,
+          "cluster": 3
+        },
+        {
+          "address": "0x603206d6105217dd972e4ab30676a220ca393346",
+          "core_score": 0.9749,
+          "balance": 0.0,
+          "counterparties": 45,
+          "betweenness": 6e-05,
+          "cluster": 3
+        },
+        {
+          "address": "0x7f51c134230eb9e5aba42bc364d3d3eba26d9712",
+          "core_score": 0.9731,
+          "balance": 0.0,
+          "counterparties": 101,
+          "betweenness": 0.001899,
+          "cluster": 3
+        },
+        {
+          "address": "0x2428cf573f77233447c23e7cc31ff2a3fcbaed76",
+          "core_score": 0.9661,
+          "balance": 0.0,
+          "counterparties": 7,
+          "betweenness": 3e-06,
+          "cluster": 2
+        },
+        {
+          "address": "0x7b7ac1f636d5a21c921ff710f9ed0ba1000b3b0c",
+          "core_score": 0.97,
+          "balance": 0.0,
+          "counterparties": 1,
+          "betweenness": 0.0,
+          "cluster": 5
+        },
+        {
+          "address": "0x7b7a043dd1f857ac0c065c90b57b4a377bdb7b0c",
+          "core_score": 0.97,
+          "balance": 0.0,
+          "counterparties": 1,
+          "betweenness": 0.0,
+          "cluster": 5
+        },
+        {
+          "address": "0x9478f8fcd3ba75c909a9c27c390b77d5513b15d1",
+          "core_score": 0.9835,
+          "balance": 0.0,
+          "counterparties": 1,
+          "betweenness": 0.0,
+          "cluster": 5
+        },
+        {
+          "address": "0x947895975ffeee29378116ebaf05fd2b62b115d1",
+          "core_score": 0.9835,
+          "balance": 0.0,
+          "counterparties": 1,
+          "betweenness": 0.0,
+          "cluster": 5
+        },
+        {
+          "address": "0xbf68c6840fecaa73ee02d9bea9b4a77d6dbcab24",
+          "core_score": 0.9648,
+          "balance": 0.0,
+          "counterparties": 1,
+          "betweenness": 0.0,
+          "cluster": 5
+        }
+      ]
+    },
+    "betweenness_def": {
+      "count": 21,
+      "definition": "betweenness top1% & balance<=median & unlabeled"
+    },
+    "overlap": 8
+  }
+}

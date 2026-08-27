@@ -1,0 +1,10 @@
+{
+  "token": "UNI",
+  "n_windows": 13,
+  "anomaly_windows": [],
+  "ref_window": 0,
+  "alignment_diag": [
+    {
+      "week": 1,
+      "anchors": 1345,
+      "resid_before": 

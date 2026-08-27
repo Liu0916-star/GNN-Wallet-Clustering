@@ -1,0 +1,1895 @@
+%% ============================================================
+%%  Neurocomputing 投稿稿 (Elsevier elsarticle)
+%%  [review,12pt] = 单栏 + 双倍行距，审稿阶段标准形态
+%%  录用后改为 [final,5p,times] 即为期刊双栏样式
+%% ============================================================
+\documentclass[final,5p,times]{elsarticle}
+
+\usepackage{lineno}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+
+\journal{Neurocomputing}
+\emergencystretch=3em
+\tolerance=1200
+
+%% ---------- 浮动体排版（双栏下 figure*/table* 只能置顶，
+%%            默认参数会让它们排队堆到文末）----------
+\usepackage{dblfloatfix}   % 允许跨栏浮动体出现在页底，并修正排序
+\usepackage{placeins}      % 提供 \FloatBarrier
+
+% 放宽每页可容纳的浮动体数量与占比
+\setcounter{topnumber}{3}          % 页顶最多 3 个（默认 2）
+\setcounter{bottomnumber}{2}       % 页底最多 2 个（默认 1）
+\setcounter{totalnumber}{5}        % 单页浮动体总数（默认 3）
+\setcounter{dbltopnumber}{3}       % 跨栏浮动体页顶上限（默认 2）
+\renewcommand{\topfraction}{0.92}       % 页顶可占版面比例（默认 0.7）
+\renewcommand{\bottomfraction}{0.6}     % 页底（默认 0.3）
+\renewcommand{\textfraction}{0.06}      % 一页至少要有的正文比例（默认 0.2）
+\renewcommand{\floatpagefraction}{0.7}  % 浮动页的填充下限（默认 0.5）
+\renewcommand{\dbltopfraction}{0.92}    % 跨栏版（默认 0.7）
+\renewcommand{\dblfloatpagefraction}{0.7}
+
+% 标记待补出处的数字（投稿前必须清零）
+\newcommand{\needcite}[1]{\textcolor{red}{\textbf{[NEEDS SOURCE: #1]}}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Uncovering Hidden Intermediaries and Inequality Paradoxes in Decentralized Finance: A Comparative Graph Neural Analysis of Oracle and Governance Token Networks}
+
+% ---- 共同第一作者：同单位，合并为单一 affiliation ----
+\author[a]{Jintao Liu\corref{cor}\fnref{eq}}
+\ead{LIU.10@student.unimelb.edu.au}
+
+\author[a]{Zhimo Ji\fnref{eq}}
+\ead{zhimoji@student.unimelb.edu.au}
+
+\cortext[cor]{Corresponding author.}
+\fntext[eq]{These authors contributed equally to this work.}
+
+\affiliation[a]{organization={School of Computing and Information Systems,
+                              The University of Melbourne},
+                city={Melbourne},
+                country={Australia}}
+
+\begin{abstract}
+Public blockchains promised disintermediation, yet their ledgers display
+extreme wealth concentration. We resolve this tension with a dual-scale
+framework combining classical inequality metrics with an unsupervised Graph
+Neural Network (GNN) that learns structural roles from transfer topology,
+applied to two functionally distinct assets over an identical 90-day window:
+the Chainlink (LINK) oracle token and the Uniswap (UNI) governance token.
+Both are extraordinarily unequal in ownership (balance $Gini = 0.990$ and
+$0.998$; top-1\% shares of 93.2\% and 98.4\%), yet both remain
+\emph{unconcentrated} as clearing infrastructure (weekly
+$HHI_{\text{Flow}} = 421$ and $386$, an order of magnitude below the U.S.
+Department of Justice threshold of 1,500). Learned graph representations
+recover labelled core infrastructure far better than classical centrality on
+both ledgers (AUC 0.912 and 0.846 against baselines plateauing at 0.600 and
+0.612), and surface 30 and 18 zero-balance \emph{hidden brokers}---Uniswap's
+Universal Router and X solver, 1inch, KyberSwap, Bitget, LI.FI, 0x---that
+hold no wealth yet occupy critical routing paths. Twelve recur across both
+tokens, of which seven carry no public label at all, identifying a shared
+and partly uncatalogued routing layer whose internal competition explains
+the low measured concentration. We characterise the resulting configuration
+as a contestable clearing layer coexisting with severely concentrated
+ownership, and show that this contestability is conditional: it is a
+property of the routing layer that the rule layer retains the authority to
+revoke.
+\end{abstract}
+
+
+\begin{highlights}
+\item Two functionally distinct token ledgers are compared over an identical
+90-day window: an oracle-infrastructure token and a governance token.
+\item Ownership is extraordinarily unequal on both ($Gini = 0.990$ and
+$0.998$), yet routing remains unconcentrated by antitrust criteria
+($HHI_{\text{Flow}} = 421$ and $386$).
+\item An unsupervised GNN recovers labelled core infrastructure far better
+than classical centrality on both ledgers, whose baselines plateau at
+$0.600$ and $0.612$.
+\item Zero-balance \emph{hidden brokers} (30 on LINK, 18 on UNI) hold no
+wealth yet occupy critical routing paths; twelve recur across both tokens
+and seven of those carry no public label.
+\item Routing contestability is conditional rather than structural: on the
+governance ledger the addresses that can amend protocol rules and those that
+operate the routing layer are almost disjoint.
+\end{highlights}
+
+\begin{keyword}
+Blockchain decentralization \sep Graph neural networks \sep Comparative analysis \sep Gini coefficient \sep Herfindahl-Hirschman Index (HHI) \sep Hidden brokers \sep Structural holes \sep Monetary intermediation
+\end{keyword}
+
+\end{frontmatter}
+
+%\linenumbers
+
+% =========================================================================
+% SECTION 1: INTRODUCTION
+% =========================================================================
+\section{Introduction}
+\label{sec:intro}
+
+The advent of public blockchain networks---most prominently Ethereum---has given monetary economists and quantitative sociologists an unusually rich empirical setting: a ``public laboratory'' in which every transaction, asset transfer, and contract interaction across an entire monetary ecosystem is immutably recorded on a transparent, permissionless ledger. Early whitepapers \cite{nakamoto2008bitcoin, wood2014ethereum} envisioned these ledgers as engines of broad disintermediation and financial democratization, capable of eliminating institutional gatekeepers and replacing centralized trust with cryptographic consensus (``Code is Law'').
+
+As decentralized finance (DeFi) has matured into a multi-billion-dollar global clearing infrastructure, however, empirical observations increasingly reveal a tension that deserves scrutiny: the emergence of systemic re-centralization. Far from yielding a flat, egalitarian economic topology, on-chain ledger distributions routinely display extreme wealth polarization and structural bottlenecks.
+
+Uncovering the micro-structural mechanics of this re-centralization presents a non-trivial computational problem. Traditional blockchain analysis relies heavily on static wealth heuristics or classical graph centrality metrics (e.g., degree, betweenness, and PageRank) \cite{meiklejohn2013fistful}. In massive, sparse, and dynamic smart contract interaction graphs, these metrics face computational bottlenecks---scaling at $O(|V| \cdot |E|)$ \cite{brandes2001faster}---and fail to capture subtle structural roles. \textbf{Graph Neural Networks (GNNs)} offer a more expressive alternative \cite{kipf2017semi, velickovic2018graph, hamilton2017inductive}: by aggregating higher-order topological neighborhoods and localized transactional features into low-dimensional node embeddings, they enable the unsupervised discovery of functional economic roles and zero-balance structural intermediaries that would otherwise remain buried in raw ledger data \cite{weber2019anti}.
+
+A separate but equally important concern is the choice of benchmark. Previous empirical studies evaluating blockchain inequality rely predominantly on global wealth distribution metrics---such as the Gini coefficient or Top-$k$ shares---frequently benchmarking token ledgers against sovereign nation-states \cite{gudgeon2020defi, campajola2023evolution, zarir2021developing}. This creates a conceptual mismatch: while a sovereign nation is a multi-sectoral civil society encompassing public infrastructure, real estate, and labor markets, a smart contract token ledger (such as Chainlink's LINK network) functions primarily as a specialized financial clearing and price-feed infrastructure. Evaluating dedicated financial rails using macro-social wealth metrics risks mischaracterizing market-driven liquidity aggregation as a failed social experiment.
+
+To bridge graph neural representation learning with monetary economic theory, this paper presents a unified empirical and GNN-driven framework analyzing the Chainlink (LINK) token network over a 90-day execution window (encompassing 642,126 transfer-active addresses). By combining unsupervised GNN node embedding clustering with dual-scale concentration metrics (Gini and Herfindahl-Hirschman Index, HHI), our technical approach systematically decodes the divergence between static wealth ownership and dynamic structural power, evaluating four core Research Questions (RQs):
+\begin{itemize}
+    \item \textbf{RQ1 (Macro vs. Industrial Concentration)}: \textit{How severe is on-chain inequality when benchmarked concurrently against sovereign wealth distributions (Gini) and traditional industrial market concentration thresholds (Herfindahl-Hirschman Index, HHI)?}
+    \item \textbf{RQ2 (Structural Power vs. Wealth)}: \textit{Do graph representation learning models reveal critical ``hidden brokers'' occupying high structural influence despite holding low or zero token balances?}
+    \item \textbf{RQ3 (Functional Homology \& Role Typology)}: \textit{What distinct economic roles emerge from unsupervised node embeddings, and how does the network's clearing topology compare to traditional financial intermediaries (e.g., Visa, SWIFT, NYSE/CME, and physical gold clearing)?}
+    \item \textbf{RQ4 (Topological Resilience)}: \textit{How does the network's structural concentration respond to extreme exogenous shocks, such as large-scale phishing exploits or market volatility events?}
+\end{itemize}
+
+\subsection{Summary of Main Contributions}
+This paper makes three primary contributions to quantitative network analysis, financial economics, and graph representation learning:
+
+\subsubsection{A GNN Framework for Measuring Structural Power (C1)}
+We first establish that unsupervised GNN embeddings constitute a
+\emph{superset} of classical graph centrality for quantifying structural
+power. Across three graph scales ($10^4$ to $6.4\times10^5$ nodes) and three
+independent targets---including an external label that cannot leak into the
+model---the GNN consistently outperforms both classical centrality and
+dimension-matched hand-crafted features. Ablation studies isolate feature
+aggregation, rather than topology alone, as the source of this advantage.
+Crucially, the instrument replicates on a second, functionally unrelated
+token: at a matched graph size the GNN reaches $0.846$ on UNI against a
+centrality baseline of $0.612$, and that baseline sits within $0.012$ of its
+LINK counterpart ($0.600$)---evidence that the failure of hand-crafted
+centrality to identify core infrastructure is a property of the measure
+rather than of any one ledger. This provides a validated, transferable
+measurement instrument on which the remaining contributions rest.
+
+\subsubsection{Dual-Scale Concentration and Comparative Benchmarking (C2)}
+Using this instrument together with classical inequality metrics, we
+introduce a dual-scale measurement framework and apply it comparatively to
+two functionally distinct assets over an identical 90-day window. At the
+distributional scale both ledgers are extraordinarily unequal (balance
+$Gini = 0.990$ for LINK and $0.998$ for UNI; top 1\% shares of 93.2\% and
+98.4\%). At the industrial scale, however, weekly routing concentration is
+low for both assets ($HHI_{\text{Flow}} = 421$ and $382$), an order of
+magnitude beneath the U.S. Department of Justice threshold of $1{,}500$
+separating unconcentrated from moderately concentrated markets
+\cite{doj2010horizontal}. Benchmarked against traditional clearing
+infrastructure---Visa/Mastercard \cite{nilson2024cards}, LPMCL gold clearing
+\cite{lbma2023clearing}, and U.S. commercial banking \cite{ffiec2023bhc}---both
+ledgers sit far inside the competitive band. That two dissimilar tokens
+converge on the same verdict indicates the pattern is a property of
+permissionless routing rather than of any single protocol.
+
+\subsubsection{Role Typology and Zero-Balance ``Hidden Brokers'' (C3)}
+Clustering the embeddings yields an 8-role economic typology on each ledger,
+uncovering in both a single dense infrastructure cluster---$169$ nodes on
+LINK, $154$ on UNI---that handles the bulk of network traffic. Across
+individual addresses, wealth and structural power are close to orthogonal
+(rank correlations between balance and counterparty count of $+0.081$ and
+$+0.032$; between balance and betweenness, $-0.028$ and $-0.051$), which is
+the mechanism that permits extreme ownership inequality to coexist with an
+unconcentrated clearing layer. Isolating nodes that are structurally core
+yet hold no balance and carry no external label, the framework identifies
+$30$ \emph{hidden brokers} on LINK and $18$ on UNI under a ten-seed rank
+ensemble; multi-source on-chain forensics resolve a third of them to
+non-custodial DEX aggregators and algorithmic solvers (1inch, Uniswap~X,
+KyberSwap, Bitget, LI.FI, 0x), entities that extract positional rent by
+bridging Burt's structural holes \cite{burt1992structural}, while the
+remainder route comparable volume with no public identity at all.
+
+\section{Related Work}
+\label{sec:related}
+
+Our research intersects four bodies of literature: (1) empirical measurement of blockchain decentralization, (2) social network theory and structural holes, (3) historical monetary economics, and (4) graph representation learning for Web3 analytics.
+
+\subsection{Decentralization and Inequality Measurement}
+Quantifying decentralization has been a central theme in Web3 literature. Early technical metrics focused on consensus-layer topology, employing measures such as the Nakamoto Coefficient \cite{grajales2022measuring} and Shannon Entropy to quantify mining pool concentration.
+
+As smart contract platforms matured, scholarly attention expanded to the application and token ledger layers. Recent empirical studies \cite{gudgeon2020defi, campajola2023evolution, zarir2021developing} have applied economic wealth concentration metrics—most notably the Gini Coefficient and Top-$k$ holding percentages—to assess token distribution. These studies report inequality, with Gini scores frequently exceeding 0.90 across major DeFi tokens.
+
+A parallel line of work argues that decentralization is not a scalar but a property that must be measured separately at each layer of the stack. Ovezik et al.\ \cite{ovezik2022sok} formalise this as a stratified assessment, decomposing a blockchain system into hardware, network, consensus, tokenomics, client, governance, geography and API layers and showing that a system may be well distributed in one and concentrated in another. Our two-scale ownership/routing decomposition and the rule layer we add in Section~\ref{sec:governance} belong to that family; what we contribute is a clearing-and-routing layer, which that taxonomy does not isolate, together with a representation-learning instrument for measuring it.
+
+A recurring limitation is the treatment of token ledgers as homogenous sovereign economies. By benchmarking token Gini coefficients exclusively against national household wealth statistics \cite{ubs2024wealth}, prior work overlooks the functional nature of utility tokens. Previous studies also neglect industrial market concentration metrics, such as the Herfindahl-Hirschman Index (HHI), which are standard in antitrust analysis \cite{doj2010horizontal}. This work addresses this gap by evaluating token ledgers against their functional counterparts.
+
+\subsection{Social Capital, Structural Holes, and Positional Rent Extraction}
+To explain how power operates independently of capital accumulation on-chain, we draw upon Ronald Burt's theory of Structural Holes \cite{burt1992structural, burt2004structural}. In social capital theory, a structural hole exists when there is a gap or lack of direct connection between two distinct clusters within a network. An actor who bridges a structural hole gains positional advantage, acting as an indispensable broker who controls information flow and extracts positional rents without necessarily possessing intrinsic capital \cite{granovetter1973strength, burt2004structural}.
+
+In traditional corporate and trade networks, structural hole brokers leverage social trust and exclusive relationships. In smart contract ecosystems, however, structural holes emerge naturally between fragmented liquidity pools, isolated Decentralized Exchanges (DEXs), and user execution interfaces.
+
+The present work bridges social network theory and decentralized finance by showing that on-chain ``hidden brokers'' (e.g., DEX aggregators and solvers) function as algorithmic embodiments of Burt's structural hole bridges. These smart contracts maintain zero token balances ($Balance \approx 0$), yet command substantial topological control by bridging disconnected liquidity pools. They extract non-custodial transactional rents (the ``Tollbooth Economy'') purely through their strategic network positioning, suggesting that structural power in Web3 can be largely detached from static wealth ownership.
+
+\subsection{Historical Monetary Economics: Re-Intermediation in Laissez-Faire Systems}
+The emergence of private intermediaries on a permissionless ledger is sometimes treated as a novel technical failure of Web3. Monetary history, however, suggests that re-intermediation is a recurring pattern in laissez-faire financial environments \cite{kindleberger2011manias}.
+
+Prior to the consolidation of central banking and public clearing institutions (such as the Bank of England in 1694 or the Federal Reserve in 1913), private markets self-organized around private clearing networks:
+\begin{itemize}
+    \item \textbf{17th-Century Merchant Bankers \& Goldsmiths}: During the European commercial expansion, international trade relied on \textbf{Bills of Exchange} negotiated by private goldsmiths and merchant bankers \cite{deroover1948medici}. These early intermediaries held modest proprietary reserves but controlled global clearing networks, extracting exchange spreads.
+    \item \textbf{19th-Century U.S. Free Banking Era}: In the absence of a central bank, thousands of private banks issued competing bank notes, creating severe transaction friction and exchange rate discounts. To resolve coordination failures, private banks voluntarily formed the \textbf{New York Clearing House} in 1853 to net out interbank balances \cite{gorton1987joint}.
+\end{itemize}
+
+Situating DeFi within this historical continuum offers a useful institutional lens: on-chain aggregators and solver contracts (such as 1inch and Rizzolver) can be read as digitized counterparts to 19th-century private clearinghouses. In laissez-faire monetary regimes, competitive pressure tends to drive traffic toward centralized clearing hubs that reduce search costs and transaction friction.
+
+\subsection{Graph Representation Learning for Web3 Forensic Analytics}
+Traditional blockchain network analysis relied heavily on heuristic address clustering \cite{meiklejohn2013fistful} and classical graph centrality metrics (e.g., degree, betweenness, and PageRank). While effective for basic transaction tracking, classical metrics face severe scalability and accuracy bottlenecks when applied to massive, sparse, and dynamic smart contract graphs. In particular, exact Betweenness Centrality computation scales at $O(|V| \cdot |E|)$, forcing studies to rely on approximate sampling that degenerates into random noise on large-scale ledgers \cite{brandes2001faster}.
+
+More recently, Graph Neural Networks (GNNs)---including GCN \cite{kipf2017semi}, GAT \cite{velickovic2018graph}, and GraphSAGE \cite{hamilton2017inductive}---have shown strong performance in Web3 forensic analytics. GNNs aggregate both structural topology and multi-dimensional node attributes (such as transaction velocity, balance, and contract code size) into low-dimensional latent embeddings, enabling illicit entity detection, phishing address identification, and smart contract classification \cite{weber2019anti}.
+
+The present study extends GNN applications from fraud detection to structural economic role discovery. By training an unsupervised GNN classifier on local structural neighborhoods and node features, the framework identifies zero-balance hidden brokers that escape both traditional wealth rankings and heuristic label databases.
+
+% =========================================================================
+% SECTION 6: DISCUSSION
+% =========================================================================
+
+\section{Data and Graph Construction}
+\label{sec:data}
+
+We study two ERC-20 transfer networks selected to be functionally
+dissimilar. The primary subject is the Chainlink token (LINK, contract
+\texttt{0x5149\ldots f986ca}), an oracle-infrastructure asset and one of the
+most actively traded ERC-20 tokens on Ethereum. The comparison subject is
+the Uniswap governance token (UNI, contract
+\texttt{0x1f98\ldots 01f984}), whose design premise is broadly distributed
+community control. Contrasting an infrastructure token with a governance
+token tests whether the concentration patterns we document are specific to
+a protocol's function or general to permissionless ledgers.
+
+Transfer records and balances for both tokens are extracted from the public
+Ethereum ledger via Google BigQuery using an identical query template, over
+an \emph{identical} 90-day observation window (2026-03-26 to 2026-06-24).
+Fixing the window is essential: it removes market-regime differences as a
+confound, so any divergence between the two ledgers is attributable to the
+asset rather than to the period. Within this window LINK records
+$1{,}233{,}497$ transfers among $642{,}126$ active addresses, and UNI
+records $433{,}856$ transfers among $38{,}667$ active addresses.
+
+Balances are computed as cumulative net flow over each token's full
+transfer history rather than over the observation window alone, yielding
+$885{,}011$ LINK addresses and $386{,}029$ UNI addresses with strictly
+positive balance. All distributional statistics reported in this paper are
+computed over these positive-balance sets; addresses that have interacted
+with the token but hold a zero net position are excluded, since they
+contribute no mass to either the Gini coefficient or the HHI.
+
+\paragraph{Mint, burn, and zero-value records.}
+The BigQuery \texttt{token\_transfers} table records issuance and
+destruction as ordinary transfers involving the null address or the
+conventional burn address. These are protocol events rather than market
+activity, and we remove them from \emph{both} endpoints before graph
+construction: $3$ such records for LINK and $1{,}498$ for UNI. Zero-value
+transfers ($26{,}311$ for LINK, $2{,}376$ for UNI) carry no mass and affect
+no concentration measure, but they do enlarge the set of addresses counted
+as active; we retain them in the main specification.
+
+\paragraph{Edge construction and weight aggregation.}
+We model the ledger as a directed, weighted graph $G = (V, E)$, where each
+node $v \in V$ is an address and each edge $(u, v) \in E$ summarises all
+transfers from $u$ to $v$ within the window. The edge weight is the
+\emph{sum} of the transferred amounts:
+\begin{equation}
+w(u,v) \;=\; \sum_{t \,\in\, \mathcal{T}(u,v)} \mathrm{amount}(t),
+\label{eq:edgeweight}
+\end{equation}
+where $\mathcal{T}(u,v)$ is the set of transfers from $u$ to $v$ in the
+window. This aggregation is not incidental. Repeated transfers between the
+same ordered pair are the dominant mode of activity on both ledgers:
+$36.7\%$ of LINK records and $83.9\%$ of UNI records are repeat edges across
+the full ledger, rising to $90.9\%$ and $91.7\%$ within the activity-ranked
+core subgraphs defined below. Treating such an edge as a single transfer
+rather than as their sum would discard $85.6\%$ (LINK) and $85.3\%$ (UNI) of
+transferred volume in the core graphs. The prevalence of repeat interaction
+is itself informative: it is the signature of a routing layer in which a
+small number of contracts intermediate the same counterparties week after
+week, a pattern we return to in Section~\ref{sec:c3}. To assess
+robustness across orders of magnitude, we construct three nested subgraphs
+by activity, containing $9{,}876$ ($\sim\!10^4$), $49{,}587$
+($\sim\!5\times10^4$), and $641{,}276$ ($\sim\!6.4\times10^5$) nodes,
+respectively. The largest graph is extremely sparse, with a mean degree of
+approximately $1.2$---a structural property that, as shown later, causes
+classical betweenness centrality to degrade. Because the UNI network is an
+order of magnitude smaller, the cross-token structural comparison
+(Section~\ref{sec:comparative}) is conducted at the matched $10^4$ scale,
+where both graphs are directly comparable in size.
+
+\subsection{Node Features}
+\label{sec:features}
+For each node we compute eight structural features: in-degree, out-degree,
+weighted in-degree, weighted out-degree, the number of distinct
+counterparties, PageRank, approximate betweenness centrality, and token
+balance. Heavy-tailed quantities are stabilized with a $\log(1+x)$
+transform followed by $z$-score standardization. Approximate betweenness is
+computed by sampling ($k = 500$ pivots for the $10^4$ and $5\times10^4$
+graphs; $k = 5{,}000$ for the $6.4\times10^5$ graph).
+
+A central methodological safeguard concerns \emph{feature leakage}. Because
+token balance is used as a prediction target in part of our evaluation
+(Section~\ref{sec:c1}), balance is \emph{excluded} from the features fed to
+the GNN whenever it serves as a label. The GNN therefore operates on the
+seven remaining structural features, ensuring that no reported result is
+contaminated by trivially predicting a target from itself.
+
+% =========================================================================
+% SECTION 4: METHOD
+% =========================================================================
+\section{Method}
+\label{sec:method}
+
+\subsection{GraphSAGE Embedding}
+\label{sec:sage}
+We learn unsupervised node embeddings with a two-layer
+GraphSAGE~\cite{hamilton2017inductive} encoder. The representation of node
+$v$ at layer $k$ is updated by aggregating its neighborhood:
+\begin{equation}
+\label{eq:sage}
+\mathbf{h}_v^{(k)} = \sigma\!\left(\mathbf{W}^{(k)} \cdot
+\mathrm{CONCAT}\!\left(\mathbf{h}_v^{(k-1)},\;
+\mathrm{MEAN}_{u \in \mathcal{N}(v)}\, \mathbf{h}_u^{(k-1)}\right)\right),
+\end{equation}
+where $\mathcal{N}(v)$ is the set of neighbors of $v$, $\mathbf{W}^{(k)}$ is
+the learnable weight matrix at layer $k$, and $\sigma$ is a nonlinear
+activation. The encoder maps the seven-dimensional input features through a
+hidden layer of width $32$ to a final embedding of dimension $16$. The
+neighbor aggregation underlying GraphSAGE can be viewed as a form of graph
+propagation, for which scalable approximate algorithms have been
+developed~\cite{wang2021agp}.
+
+The model is trained for $200$ epochs with the Adam optimizer (learning
+rate $0.01$) under an unsupervised objective that encourages the embeddings
+of transacting pairs (positive edges) to be similar while pushing apart
+randomly sampled negative pairs. Training is performed on Apple MPS
+hardware without CUDA; all embeddings are computed inductively, so the same
+encoder generalizes across the three graph scales.
+
+\subsection{Evaluation Protocol for Structural Power}
+\label{sec:measures}
+To test whether the learned embeddings capture structural power beyond
+classical descriptors, we evaluate three feature sets---classical
+centrality (PageRank and betweenness), the full hand-crafted structural
+features, and the unsupervised GNN embedding---against three independent
+targets:
+\begin{enumerate}
+    \item \textbf{External label (\texttt{is\_core}).} Predicting an
+    Etherscan-derived entity label that, by construction, never enters the
+    model input; the number of positive nodes is $74$, $86$, and $161$ at
+    the three scales.
+    \item \textbf{Top-balance nodes.} Predicting membership in the top 5\%
+    by balance, with balance excluded from the GNN input.
+    \item \textbf{Neighborhood enrichment.} Measuring how strongly each
+    representation concentrates same-class (core) neighbors in embedding
+    space, relative to a random baseline.
+\end{enumerate}
+All classifiers are evaluated with stratified five-fold cross-validation
+(shuffled, fixed seed $42$); reported AUC values are the mean across folds
+with the corresponding standard deviation. Confidence intervals, where
+given, are obtained by bootstrap resampling of the predictions (fit-once,
+$B = 1000$).
+
+
+%% ============================================================
+\section{Experiments}
+\label{sec:exp}
+
+We organize our empirical study around the three contributions introduced
+in Section~\ref{sec:intro}. Section~\ref{sec:c1} establishes that GNN
+embeddings form a \emph{superset} of classical centrality for measuring
+structural power (C1), supported by ablation studies
+(Section~\ref{sec:ablation}). Section~\ref{sec:c2} traces the temporal
+evolution of concentration (C2). Section~\ref{sec:c3} presents the role
+typology and the discovery of hidden brokers (C3). Finally,
+Section~\ref{sec:w7} reports a case study of a coordinated phishing event
+that stress-tests the stability of the observed concentration.
+
+Unless otherwise stated, all classifiers are evaluated with stratified
+five-fold cross-validation (shuffled, fixed seed), and reported AUC values
+are the mean across folds with the corresponding standard deviation.
+Confidence intervals, where given, are obtained by bootstrap resampling
+of the predictions ($B=1000$). Crucially, node balance is \emph{excluded}
+from the GNN input features whenever balance is used as a prediction target,
+so that no evaluation is subject to feature leakage.
+
+%% ------------------------------------------------------------
+\subsection{Contribution 1: The GNN as a Superset of Classical Centrality}
+\label{sec:c1}
+
+We test whether GNN embeddings capture structural information that is not
+available to either classical centrality or the same hand-crafted features
+used as GNN input. We use three complementary lines of evidence, each at
+three graph scales (approximately $10^4$, $5\times10^4$, and $6.4\times10^5$
+nodes), and compare three feature sets: classical centrality (PageRank and
+betweenness), the full set of hand-crafted structural features, and the
+unsupervised GNN embedding.
+
+\paragraph{Evidence 1: predicting an external label.}
+The most stringent test predicts the external \texttt{is\_core} label
+(derived from Etherscan entity tags), which by construction can never enter
+the model input and is therefore immune to leakage. As shown in
+Table~\ref{tab:c1_iscore}, classical centrality performs barely above
+chance at every scale, while both the hand-crafted structural features and
+the GNN embedding recover the label well at the two smaller scales. At the
+$10^4$ scale the GNN reaches $0.912 \pm 0.021$ against $0.896$ for the full
+structural features and $0.600$ for centrality.
+
+The GNN's margin over the structural features is small and shrinks
+monotonically with graph size: $+0.016$ at $10^4$, $+0.007$ at
+$5\times10^4$, and $-0.002$ at $6.4\times10^5$. Measured against the
+seed-level standard deviation, none of these differences exceeds one
+standard deviation, and we do not claim an AUC advantage for the GNN over a
+well-specified structural feature set. What the table does establish, and
+establishes decisively, is the failure of classical centrality: a gap of
+roughly $0.30$ AUC at the smaller scales that no amount of seed variation
+closes. The degradation of both learned and hand-crafted representations at
+$6.4\times10^5$ has a simple cause---the positive rate falls from $0.75\%$
+to $0.025\%$ ($161$ anchors among $641{,}276$ nodes), and every method
+suffers under that imbalance.
+
+\begin{table*}[!tbp]
+\centering
+\caption{C1, Evidence 1: five-fold cross-validated AUC for predicting the
+external \texttt{is\_core} label. The label is never part of the model
+input, ruling out feature leakage. Centrality and structural baselines are
+deterministic given the graph; the GNN figure is the mean over independent
+random initialisations ($10$ seeds at $10^4$, $5$ at $5\times10^4$, $3$ at
+$6.4\times10^5$) with the standard deviation \emph{across seeds}. Bold marks
+a result whose advantage exceeds one seed-level standard deviation.}
+\label{tab:c1_iscore}
+\begin{tabular}{lccc}
+\toprule
+Scale & Centrality & Full struct.\ features & \textbf{GNN} \\
+\midrule
+$10^4$            & $0.600$ & $0.896$ & $\mathbf{0.912 \pm 0.021}$ \\
+$5\times10^4$     & $0.657$ & $0.914$ & $\mathbf{0.921 \pm 0.011}$ \\
+$6.4\times10^5$   & $0.656$ & $0.759$ & $0.757 \pm 0.026$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!tbp]
+  \centering
+  \includegraphics[width=0.98\linewidth]{fig_c1_scale.pdf}
+  \caption{Contribution 1 across three graph scales on LINK. (a) AUC for the
+  external \texttt{is\_core} label: classical centrality stays near chance
+  while the GNN's margin over dimension-matched structural features narrows
+  from $+0.016$ to $-0.002$ and never exceeds one seed-level standard
+  deviation. (b) Absolute neighbourhood purity, plotted against the random
+  baseline (dotted), which falls by a factor of $30$ across the three scales;
+  centrality's purity \emph{declines} even as its enrichment multiple rises.
+  (c) The GNN-to-structural purity ratio, which is invariant to that baseline
+  and holds between $2.48$ and $2.69$ across a $65$-fold range in node
+  count.}
+  \label{fig:c1_iscore}
+\end{figure*}
+
+\paragraph{Evidence 2: predicting top-balance nodes.}
+We next predict whether a node belongs to the top 5\% by balance. Because
+balance is removed from the GNN input, this remains a leakage-free test of
+whether structural position alone encodes economic weight.
+Table~\ref{tab:c1_balance} shows that the GNN dominates at every scale,
+reaching AUC $0.928$ at the largest. Unlike the \texttt{is\_core} target,
+here the GNN's advantage over the structural features is large
+($+0.147$, $+0.058$, $+0.045$) and survives seed variation at every scale.
+We note one inversion worth recording: at $10^4$ the two-dimensional
+centrality baseline ($0.770$) marginally outperforms the seven-dimensional
+structural set ($0.767$), so a richer hand-crafted feature vector is not
+uniformly better for this target.
+
+\begin{table*}[!tbp]
+\centering
+\caption{C1, Evidence 2: five-fold cross-validated AUC for predicting
+top-5\% balance nodes. Balance is excluded from the GNN input. GNN figures
+are means over random initialisations with the seed-level standard
+deviation.}
+\label{tab:c1_balance}
+\begin{tabular}{lccc}
+\toprule
+Scale & Centrality & Full struct. & \textbf{GNN} \\
+\midrule
+$10^4$          & $0.770$ & $0.767$ & $\mathbf{0.914 \pm 0.017}$ \\
+$5\times10^4$   & $0.792$ & $0.812$ & $\mathbf{0.870 \pm 0.017}$ \\
+$6.4\times10^5$ & $0.845$ & $0.883$ & $\mathbf{0.928 \pm 0.013}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\paragraph{Evidence 3: neighborhood enrichment.}
+Finally, we measure how strongly each representation concentrates
+same-class (core) neighbours in embedding space. This is where the GNN's
+contribution actually lies, and it is stable in exactly the way the AUC
+margin is not: the GNN attains between $2.5$ and $2.7$ times the
+neighbourhood purity of the dimension-matched structural features at every
+scale (Table~\ref{tab:c1_enrich}), across a $65$-fold range in node count.
+
+We report absolute purity rather than fold-enrichment over the random
+baseline, and the distinction is not cosmetic. Because the random baseline
+is the positive rate, it falls by a factor of $30$ from $10^4$ to
+$6.4\times10^5$, so enrichment multiples inflate mechanically with graph
+size. Classical centrality is the clearest case: its enrichment rises from
+$2.0\times$ to $12.4\times$ across the three scales, which reads as
+improvement, while its absolute purity \emph{falls} from $0.0149$ to
+$0.0031$. At the largest scale, only three in a thousand of the neighbours
+that centrality places next to a core node are themselves core. Any
+enrichment figure reported on graphs of differing size should be
+accompanied by the underlying purity, and we do so throughout.
+
+\begin{table*}[!tbp]
+\centering
+\caption{C1, Evidence 3: absolute neighbourhood purity of core nodes
+(fraction of a node's $k=10$ nearest neighbours in embedding space that are
+themselves core). We report purity rather than fold-enrichment because the
+random baseline shrinks with graph size ($0.0075$, $0.0017$, $0.00025$ at
+the three scales), so an enrichment multiple can rise while absolute
+performance falls. The final column is the GNN-to-structural purity ratio,
+which is invariant to that baseline and is therefore comparable across
+scales.}
+\label{tab:c1_enrich}
+\begin{tabular}{lcccc}
+\toprule
+Scale & Centrality & Full struct.\ features & \textbf{GNN} & GNN\,/\,struct. \\
+\midrule
+$10^4$          & $0.0149$ & $0.0959$ & $\mathbf{0.2578}$ & $2.69\times$ \\
+$5\times10^4$   & $0.0081$ & $0.0988$ & $\mathbf{0.2607}$ & $2.64\times$ \\
+$6.4\times10^5$ & $0.0031$ & $0.0516$ & $\mathbf{0.1282}$ & $2.48\times$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+
+\paragraph{What scales and what does not.}
+Reading the three evidence lines together yields a sharper claim than any
+of them alone. The GNN's AUC advantage over hand-crafted structural
+features does \emph{not} survive scaling: it falls from $+0.016$ to
+$-0.002$ and is within seed noise throughout. Its neighbourhood-purity
+advantage does: $2.69\times$, $2.64\times$, $2.48\times$ across a $65$-fold
+range in node count. The two facts are consistent if the GNN's contribution
+is to the \emph{geometry} of the embedding rather than to the linear
+separability of the label---it places structurally similar addresses near
+one another, which is what Section~\ref{sec:c3} relies on, without
+necessarily making them easier to rank with a linear probe.
+
+Two degradations are worth recording as properties of the data rather than
+of any method. First, absolute purity for every representation roughly
+halves at $6.4\times10^5$, tracking a positive rate that falls to $0.025\%$.
+Second, approximate betweenness degenerates on the largest, extremely
+sparse graph (mean degree $\approx 1.2$), where it predicts
+\texttt{is\_core} at chance level. Neither is an implementation artifact,
+and the second reinforces the broader claim that hand-crafted centrality is
+insufficient to characterise structural power at the scales at which these
+ledgers actually operate.
+
+%% ------------------------------------------------------------
+\subsection{Ablation Studies}
+\label{sec:ablation}
+
+\paragraph{Learned representations versus hand-crafted centrality.}
+We compare against node2vec, a purely topological embedding, on the $10^4$
+graph, running it under the same multi-seed protocol as the GNN. On LINK the
+two are statistically indistinguishable on \texttt{is\_core} ($0.912 \pm
+0.021$ versus $0.914 \pm 0.011$; pooled $z = -0.21$), while on UNI the GNN
+is clearly ahead ($0.846 \pm 0.029$ versus $0.800 \pm 0.023$; $z = +3.31$).
+We therefore state the comparison as the evidence supports it: the decisive
+gap is between \emph{learned representations of any kind} and hand-crafted
+centrality ($0.600$), not between the GNN and node2vec. The GNN's advantage
+over node2vec is token-dependent, appearing on the governance ledger and
+not on the oracle ledger.
+
+\paragraph{On the constant-input ablation.}
+Replacing all node features with an uninformative constant collapses the
+\texttt{is\_core} AUC to $0.461 \pm 0.051$, i.e.\ no better than chance
+(Table~\ref{tab:ablation}). We caution against the natural reading of this
+number. With constant inputs, mean aggregation in GraphSAGE returns a
+near-identical vector for every node regardless of its position, so the
+ablation measures a limitation of that architecture under degenerate input
+rather than the information content of topology. The correct control is
+node2vec, which uses topology alone and reaches $0.914$ on the same graph.
+Topology is highly informative; this particular GNN simply cannot extract
+it without features to aggregate.
+
+\paragraph{Two representations, two strengths.}
+node2vec attains \emph{higher} neighbourhood purity than the GNN on both
+ledgers ($0.293$ against $0.258$ on LINK; $0.170$ against $0.111$ on UNI),
+which at first appears to contradict the broker results in
+Section~\ref{sec:c3}, where the GNN recovers roughly twice as many
+intermediaries. Examining the composition of each method's top percentile
+resolves the tension. Among the top $1\%$ of nodes by score, $34\%$ carry a
+public label under node2vec against $16\%$ under the GNN on LINK ($21\%$
+against $14\%$ on UNI). node2vec ranks \emph{already-labelled}
+infrastructure highest, which is exactly what maximises purity measured
+against labelled anchors; the GNN promotes unlabelled high-throughput
+contracts, which is what survives the zero-balance, no-label filter that
+defines a hidden broker. One method recalls what is known, the other
+surfaces what is not.
+
+\begin{table}[!htbp]
+\centering
+\caption{Ablation on the $10^4$ LINK graph. Learned representations---the
+GNN and node2vec alike---separate core infrastructure far better than
+classical centrality. The constant-input row measures a degeneracy of mean
+aggregation under uninformative features, not the information content of
+topology; node2vec is the appropriate topology-only control. Figures are
+means over random initialisations with seed-level standard deviations.}
+\label{tab:ablation}
+\begin{tabular}{lc}
+\toprule
+Model / setting & \texttt{is\_core} AUC \\
+\midrule
+GNN (full features)        & $\mathbf{0.912 \pm 0.021}$ \\
+node2vec (topology only)   & $\mathbf{0.914 \pm 0.011}$ \\
+GNN (constant input)       & $0.461 \pm 0.051$ \\
+Classical centrality       & $0.600$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Among feature groups, the number of distinct counterparties is the single
+most important feature for identifying core infrastructure (its removal
+causes the largest drop), which is economically intuitive: exchanges and
+routers are defined by interacting with a large number of addresses. In
+contrast, removing PageRank slightly \emph{improves} performance, further
+underscoring the limited contribution of hand-crafted centrality. We note
+that this group ablation was computed on the corrected edge weights of
+Equation~\ref{eq:edgeweight}, under which the weighted features carry
+substantially more information than in an unaggregated construction.
+
+%% ------------------------------------------------------------
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.86\linewidth]{fig_ablation.pdf}
+  \caption{Ablation on the $10^4$ LINK graph. The GNN and node2vec are
+  statistically indistinguishable on this target, and both far exceed
+  classical centrality; the dashed line marks chance. The constant-input
+  configuration falls below chance because mean aggregation over
+  uninformative features returns near-identical vectors for all nodes---a
+  degeneracy of the architecture under that input, not evidence that
+  topology is uninformative, as the node2vec bar shows. Error bars are one
+  standard deviation across random initialisations.}
+  \label{fig:ablation}
+\end{figure}
+
+\subsection{Contribution 2: Temporal Stability of Extreme Concentration}
+\label{sec:c2}
+
+\paragraph{A stable, extreme inequality.}
+Aggregating transfers into weekly windows, we find that concentration is
+both extreme and remarkably stable over the 90-day period. On LINK the
+weekly flow Gini averages $0.979$ (range $[0.972, 0.989]$), the top 1\% of
+senders account for $81.1\%$ of weekly outflow, and the top 50 senders hold
+an average $70.8\%$ flow share week over week. Yet week-over-week retention
+of that top 50 is only $56\%$, revealing a regime of ``stable membership,
+rotating ranks'': the boundary of the elite is locked while internal
+positions churn. UNI shows the same regime with a firmer boundary---flow
+Gini $0.969$, top-1\% share $70.7\%$, top-50 flow share $77.4\%$, and
+retention $63\%$.
+
+All weekly quantities in this section are computed on the sender side and
+on the aggregated edge weights of Equation~\ref{eq:edgeweight}. We report
+retention only for window pairs in which neither window is anomalous, since
+the week-7 event described in Section~\ref{sec:w7} contaminates both its
+own retention value and that of the following week.
+
+\paragraph{Window-wise re-training with embedding alignment.}
+To verify that this picture is not an artifact of reusing a single global
+embedding, we re-train a separate GraphSAGE embedding for each weekly
+window and align them with orthogonal Procrustes transformations (reference
+window~0). The anomalous window~7 on LINK is excluded from this analysis
+entirely rather than merely flagged: with $550{,}233$ nodes it is more than
+thirty times the size of a typical window and does not represent the
+ledger's ordinary routing structure.
+
+Alignment succeeds for every retained window pair on both ledgers (LINK
+$11/11$, UNI $12/12$), with a minimum of $2{,}027$ common anchor nodes
+between adjacent windows on LINK and $809$ on UNI---above the threshold for
+reliable alignment in both cases. We identify $157$ addresses on LINK and
+$53$ on UNI that remain in the elite in every window, and measure their mean
+inter-window drift in the aligned space as $1.370$ and $1.506$
+respectively. Expressed as a share of a typical window's elite set, the
+persistent core is $18\%$ on LINK and $22\%$ on UNI---close agreement
+between two functionally unrelated ledgers. This embedding-based
+measurement corroborates the flow-share analysis: a persistent elite whose
+internal configuration nonetheless drifts continuously.
+
+We report these figures from a single run and flag their reproducibility
+explicitly. Window-wise embeddings are trained on GPU, where the scatter
+operations underlying neighbourhood aggregation are not deterministic, so a
+re-run perturbs the persistent-elite count and the drift mean. The aligned
+embeddings are archived with the analysis code so that the reported values
+can be recomputed exactly.
+
+%% ------------------------------------------------------------
+\begin{figure*}[!tbp]
+  \centering
+  \includegraphics[width=0.98\linewidth]{fig_c2_timeseries.pdf}
+  \caption{Weekly concentration dynamics for both ledgers over the same
+  90-day window: flow Gini, top-1\% flow share, flow HHI against the DOJ
+  threshold, betweenness Gini, top-50 flow share, and week-over-week
+  retention of the top 50. All quantities are sender-side and computed on
+  the aggregated edge weights of Equation~\ref{eq:edgeweight}. Concentration
+  is high, trendless and unconcentrated by antitrust criteria in every
+  window on both series. The circled point is LINK's coordinated
+  phishing-airdrop window, which the outlier detector flags and which has no
+  counterpart in the UNI series; its betweenness Gini is omitted because
+  pivot sampling degenerates at $550{,}233$ nodes.}
+  \label{fig:c2}
+\end{figure*}
+
+
+\subsection{Cross-Token Validation: LINK versus UNI}
+\label{sec:comparative}
+
+A single-asset study cannot distinguish a property of the protocol from a
+property of permissionless ledgers in general. We therefore replicated the
+concentration analysis on a second, functionally dissimilar asset---the
+Uniswap (UNI) governance token---over the \emph{identical} 90-day window
+(2026-03-26 to 2026-06-24), using an identical extraction query and an
+identical measurement script. Holding the observation period fixed removes
+market-regime effects as a confound, so any difference between the two
+tokens is attributable to the asset rather than to the period.
+
+The comparison is deliberately adversarial to our own thesis. UNI is a
+governance token whose entire design premise is decentralized, broadly
+distributed control; if concentration were an artifact of LINK's
+infrastructural role, UNI should look markedly more egalitarian. It does
+not. UNI is \emph{more} unequal on every distributional measure: a balance
+Gini of $0.998$ against $0.990$, a top 1\% share of $98.4\%$ against
+$93.2\%$, and a top 10 share of $51.7\%$ against $32.9\%$. A token marketed
+on the promise of community governance concentrates ownership more tightly
+than the oracle network it helps price.
+
+At the market-structure scale the two assets converge rather than diverge.
+Mean weekly routing concentration is $421$ for LINK and $386$ for UNI, both
+far inside the unconcentrated band, with weekly maxima of $1{,}147$ and
+$593$ respectively. The remaining difference lies in balance HHI ($135$ for
+LINK versus $872$ for UNI), and it too dissolves under scrutiny: protocol
+holdings account for $21.0\%$ of observed LINK supply and $28.0\%$ of UNI
+supply, with a further $10.8\%$ of UNI held at the burn address. Excluding
+burn and issuer addresses brings the two ledgers to $115$ and $109$, a
+difference of $6\%$. What looked like a six-fold gap in ownership
+concentration is, on inspection, a difference in how much of its own supply
+each protocol holds. We interpret these results in
+Section~\ref{sec:discussion}.
+
+\paragraph{The measurement instrument generalizes.}
+Distributional statistics alone would not establish that our \emph{method}
+transfers across assets. We therefore re-ran the full C1 pipeline on UNI at
+the matched $10^4$ scale, using an identical script, identical
+hyperparameters, and an identical evaluation protocol. The two graphs are
+almost exactly the same size ($9{,}765$ nodes for UNI against $9{,}876$ for
+LINK), so no difference can be attributed to graph scale.
+
+Table~\ref{tab:c1_cross} and Fig.~\ref{fig:c1_cross} report the outcome.
+The GNN retains a decisive advantage over classical centrality on the
+leakage-proof \texttt{is\_core} target for both assets: $0.912$ versus
+$0.600$ on LINK, and $0.846$ versus $0.612$ on UNI. The most striking
+regularity is not the GNN scores but the \emph{baseline} ones. Classical
+centrality lands at $0.600$ and $0.612$ on two functionally unrelated
+tokens---a difference of $0.007$. PageRank and betweenness are therefore
+not failing to identify core infrastructure because of some peculiarity of
+the Chainlink network; they plateau just above chance wherever we look,
+which is what one expects if hand-crafted centrality simply does not encode
+the property that distinguishes infrastructure from ordinary accounts. The
+purity results tell the same story: the GNN sustains $2.69\times$ (LINK)
+and $2.17\times$ (UNI) the neighbourhood purity of the dimension-matched
+structural-feature baseline.
+
+\begin{table*}[!tbp]
+\centering\small
+\caption{Contribution 1 replicated across tokens at the matched $10^4$
+scale. Identical pipeline, hyperparameters, and evaluation protocol.
+Classical centrality plateaus near $0.61$ on both assets---a difference of
+$0.012$ between two functionally unrelated ledgers---while both learned
+representations retain a large margin on each.}
+\label{tab:c1_cross}
+\begin{tabular}{llcc}
+\toprule
+Evidence & Representation & LINK & UNI \\
+\midrule
+\multirow{3}{*}{\texttt{is\_core} AUC}
+ & Centrality             & 0.600 & 0.612 \\
+ & Full struct.\ features & 0.896 & 0.830 \\
+ & \textbf{GNN}           & \textbf{0.912} & \textbf{0.846} \\
+\midrule
+\multirow{3}{*}{Enrichment}
+ & Centrality             & $5.6\times$  & $7.5\times$ \\
+ & Full struct.\ features & $12.8\times$ & $8.7\times$ \\
+ & \textbf{GNN}           & $\mathbf{34.4\times}$ & $\mathbf{19.0\times}$ \\
+\midrule
+\multicolumn{2}{l}{Graph size / \texttt{is\_core} anchors}
+ & 9{,}876 / 74 & 9{,}765 / 57 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!tbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{fig_c1_auc_enrichment.pdf}
+  \caption{Contribution 1 replicated across tokens at the matched $10^4$
+  scale. (a) AUC on the leakage-proof \texttt{is\_core} target: classical
+  centrality lands within $0.012$ of the same value on two functionally
+  unrelated ledgers, while every learned representation retains a large
+  margin on each. (b) Neighbourhood enrichment over the random baseline for
+  the same four methods. node2vec attains the higher enrichment of the two
+  learned representations on both tokens; Section~\ref{sec:ablation}
+  explains why this coexists with its recovering fewer hidden brokers.}
+  \label{fig:c1_cross}
+\end{figure*}
+
+\paragraph{Temporal concentration is stable in both ledgers, but located
+in different dimensions.}
+Applying the weekly windowing procedure to UNI yields thirteen windows and,
+unlike LINK, no anomalous window: the automated detector (node count above
+three times the median) flags nothing, confirming that the coordinated
+airdrop of Section~\ref{sec:w7} is an event in the LINK series rather than a
+general feature of token ledgers. Both series are stationary---the linear
+trend in UNI's weekly flow Gini is $+0.0004$ per week, statistically
+indistinguishable from flat, matching the absence of trend in LINK (Fig.~\ref{fig:c2}).
+
+
+
+
+The two assets differ in \emph{where} their concentration sits. UNI is the
+more unequal ledger by holdings (balance $Gini = 0.998$ against $0.990$) but
+the less unequal by flow (mean weekly flow $Gini = 0.969$ against $0.979$;
+top-1\% flow share $70.7\%$ against $81.1\%$). LINK inverts this. Structural
+concentration, measured as the Gini of betweenness, is comparable
+($0.833$ and $0.877$; the LINK figure averages the twelve windows in which
+sampled betweenness is non-degenerate, excluding window~7). This is the same pattern the role typology produced
+from an entirely independent computation: UNI's concentration resides in
+holding, because its largest holders are treasury and vesting contracts that
+accumulate supply, whereas LINK's resides in routing, because its flow
+passes through hubs that hold nothing. Two methods---weekly distributional
+statistics and unsupervised role clustering---converge on the same
+structural account of how the ledgers differ.
+
+The window-wise embedding analysis replicates as well. Re-training a
+separate GraphSAGE encoder on each weekly window and aligning the resulting
+spaces by orthogonal Procrustes succeeds for every retained pair on both
+ledgers (UNI $12/12$, LINK $11/11$ after excluding the anomalous window~7),
+with a minimum of $809$ common anchor nodes between adjacent windows on UNI
+and $2{,}027$ on LINK. Of the addresses present in every window, $53$
+persist throughout on UNI against $157$ on LINK. Normalised by the size of a
+typical window's elite set these are $22\%$ and $18\%$---a closer agreement
+between the two ledgers than the raw counts suggest, and one that holds
+despite an order-of-magnitude difference in graph size.
+
+The quantity of interest, mean inter-window drift of the persistent elite in
+the aligned space, is $1.506$ on UNI against $1.370$ on LINK: a difference
+of $0.023$, with each token's mean falling inside the other's observed
+range. Two independently trained sequences of embeddings, on ledgers that
+differ in function, size and holder composition, produce the same
+characteristic rate at which structurally central addresses shift position.
+Combined with the turnover result below, this makes the ``stable set,
+rotating seats'' finding the most thoroughly replicated in the paper---it
+holds under two measurement approaches (flow-share turnover and
+embedding-space drift) on two assets.
+
+The elite-turnover result replicates directly. Weekly retention of the
+top-50 addresses by weighted in-degree averages $48.0\%$ on UNI (range
+$44.0\%$--$56.0\%$), against $53\%$ on LINK---a value that falls inside
+UNI's observed range. Roughly half the leading positions change hands from
+one week to the next in both ledgers, while the aggregate concentration
+they produce does not move. The ``stable set, rotating seats'' pattern is
+therefore not an idiosyncrasy of the Chainlink network: extreme
+concentration is reproduced week after week by a partially different cast
+of intermediaries, which is what one expects when the routing layer is
+contestable (Section~\ref{sec:c2}) but the barriers to reaching it are not.
+
+We do not, however, report a cross-token comparison of the elite flow
+\emph{share}. That statistic is defined over a fixed top-500 set, which
+represents roughly $3\%$ of nodes in a typical LINK window but $10\%$ in the
+smaller UNI windows ($4{,}041$--$6{,}182$ nodes against LINK's
+$\sim\!16{,}000$); the two are not measuring the same object, and
+re-normalising the cut would change the LINK figure reported earlier.
+
+\paragraph{The role typology transfers, but one finding is
+token-specific.}
+Re-running the clustering and broker-identification procedure on UNI
+reproduces the overall architecture: a small, dense infrastructure cluster
+($154$ nodes, $8.4\%$ core rate, median $78$ counterparties) sitting above a
+broad periphery of retail addresses, closely mirroring LINK's ($169$ nodes,
+$10.1\%$, median $80$). On both ledgers this cluster is simultaneously the
+highest in core rate and in median balance---the infrastructure that clears
+the ledger also holds the most of it.
+
+An earlier version of this analysis reported the opposite for LINK, with
+wealth and structural power borne by different clusters. That result did not
+survive the corrected edge-weight construction of
+Equation~\ref{eq:edgeweight}: under an unaggregated construction the
+weighted features understated the throughput of large holders, and the
+infrastructure cluster recorded a median balance of $0.33$ rather than
+$3{,}934$. We report the corrected finding and withdraw the cross-token
+contrast.
+
+The wealth--power divergence survives, but at the level where it is actually
+measurable. Across individual nodes with a positive balance, the rank
+correlation between balance and counterparty count is $+0.081$ on LINK and
+$+0.032$ on UNI, and between balance and betweenness $-0.028$ and $-0.051$.
+All four are indistinguishable from zero. Wealth and structural power are
+not opposed on these ledgers; they are close to \emph{orthogonal}, and that
+orthogonality is what allows a Gini of $0.99$ to coexist with an
+unconcentrated routing layer. The cluster-level association reflects a
+single small cluster of exchanges and routers that both hold and move
+supply, and should not be read as a general coupling.
+
+\paragraph{Hidden brokers are a shared routing layer, not a token
+artifact.}
+The broker sets overlap substantially across the two ledgers. Of the $18$
+hidden brokers identified on UNI, $12$ are the same addresses recovered
+among the $30$ on LINK, and the overlap concentrates at the top: seven of
+the ten highest-counterparty UNI brokers also appear in the LINK set. Six
+named aggregators intermediate both assets---the Uniswap V4 Universal
+Router, a second Universal Router deployment carrying cross-chain
+extensions, Uniswap~X's Rizzolver solver, Bitget's DEX aggregator, LI.FI's
+Diamond router, and a 0x~Protocol routing contract. This directly explains
+the convergence documented in Section~\ref{sec:comparative}: the two tokens
+exhibit near-identical routing concentration ($HHI_{\text{Flow}}$ of $421$
+and $386$) because the routing is performed by a common, mutually competing
+set of contracts rather than by token-specific infrastructure. Cross-token
+replication thus does more than validate the method; it identifies the
+object the method is measuring.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.86\linewidth]{fig_broker_overlap.pdf}
+  \caption{Decomposition of the hidden-broker sets across the two ledgers.
+  Twelve addresses intermediate both tokens; of those, five resolve to a
+  named protocol under manual on-chain verification and seven carry no
+  public identity of any kind. The shared, largely uncatalogued segment is
+  the routing layer whose internal competition accounts for the
+  near-identical flow concentration of the two ledgers.}
+  \label{fig:broker_overlap}
+\end{figure}
+
+
+Two entries in that list qualify the claim in ways worth stating. 1inch
+appears on both ledgers but through \emph{different} contracts---Aggregation
+Router~V6 on LINK, Aggregation Executor~5 on UNI---so its cross-token
+presence is a fact about the operator, not about any single address, which
+is precisely the distinction Section~\ref{sec:entity} formalises. And Mayan's
+Swift~v2 endpoint, which an earlier single-run analysis placed among the
+shared brokers, falls just outside the top percentile on both ledgers under
+the multi-seed ensemble (score percentiles $0.960$ and $0.917$); we remove
+it from the list rather than retain a near-miss.
+
+\paragraph{Stability of the broker set.}
+\label{sec:brokerstability}
+Because the criterion cuts a hard percentile, membership near the boundary is
+sensitive to initialisation. Across ten runs on LINK, $87$ addresses are
+selected at least once, $48$ of them no more than twice, and only two in nine
+runs or more; the corresponding figures on UNI are $50$, $20$ and five. The
+rank-ensemble specification we report is deterministic given a fixed set of
+embeddings, and the intersection with the vote-consensus criterion---$22$
+addresses on LINK and $13$ on UNI---provides a high-confidence subset whose
+composition is stable under either rule. Where the text names an individual
+contract, we do so only for members of that intersection.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig_broker_stability.pdf}
+  \caption{Selection frequency of hidden brokers across ten independent
+  random initialisations. Most addresses that qualify in any run qualify in
+  very few---$48$ of $87$ on LINK appear at most twice---which is the
+  expected behaviour of a hard percentile cut near its boundary rather than
+  a defect of the criterion. We therefore report a rank ensemble over the
+  ten runs, together with the vote-consensus subset and their intersection,
+  instead of the outcome of any single run.}
+  \label{fig:broker_stability}
+\end{figure}
+
+
+\paragraph{Seven of the shared brokers carry no verifiable identity.}
+Of the twelve brokers appearing on both ledgers, five resolve to a named
+protocol under manual on-chain verification and seven do not. The seven
+unidentified contracts are not obscure. Each records on the order of $10^4$
+ERC-20 transfers, several remained active within minutes of inspection, and
+their counterparties identify a specific and comparatively recent class of
+infrastructure: intent-based solvers and aggregation relays, cross-chain
+routing endpoints, and batch distribution contracts. What they lack is a
+name tag.
+
+One case makes the point sharply. The single highest-degree cross-token
+broker ($230$ distinct counterparties, betweenness $0.011$, selected in nine
+of ten seeds) carries no label of any kind, yet its deployer address also
+deployed a contract that Etherscan labels ``1inch: Aggregation Executor 5''.
+Two contracts from the same operator, one catalogued and one not, and the
+uncatalogued one is the more structurally central of the pair. We record the
+deployer relationship as evidence but do not assign the label, so that the
+entity-resolution figures of Section~\ref{sec:entity} remain a conservative
+lower bound.
+
+That these contracts are absent from the label databases on which
+conventional on-chain analysis depends is the substantive finding. A
+structural method recovers them because it asks what a node \emph{does} in
+the graph rather than what it is called---and the two questions have
+measurably different answers.
+
+\paragraph{Structural coreness is agnostic to legitimacy.}
+Manual verification of the UNI-specific brokers returned a more
+heterogeneous population than on LINK. The highest-ranked new broker is the
+LI.FI cross-chain aggregator (244 counterparties, $3.7$ million lifetime
+transfers); two others are Etherscan-labelled MEV bots; and one is a
+contract that Etherscan flags as \emph{compromised}, with an active
+vulnerability warning. Together with the phishing-labelled address in the
+LINK set, this establishes that the signature we exploit---high structural
+coreness with zero custody---is shared by legitimate routers, extractive
+automation and adversarial contracts alike. The method identifies
+\emph{operational centrality}, not legitimacy. We regard this as a
+qualification of the interpretation rather than a defect of the measurement:
+a monitoring apparatus for systemic operational risk needs precisely a
+signal that fires on whoever occupies the critical path, independent of
+intent.
+
+Three caveats bound this comparison. First, the GNN margin is smaller on
+UNI than on LINK (\texttt{is\_core} $0.846$ against $0.912$; purity
+$0.111$ against $0.258$), and UNI supplies fewer labelled anchors
+($57$ against $74$), so its estimates carry more sampling noise. Second,
+the full UNI transfer graph is an order of magnitude smaller than LINK's
+($38{,}667$ against $642{,}126$ active addresses), which is why the
+head-to-head comparison is conducted at $10^4$ rather than at full scale.
+Third, two tokens remain a small sample: we regard this as evidence that
+neither the concentration pattern nor the measurement instrument is
+protocol-specific, not as proof of universality across the asset class.
+
+\subsection{Contribution 3: Role Typology and the Discovery of Hidden Brokers}
+\label{sec:c3}
+
+\paragraph{Eight structural roles.}
+Clustering the GNN embedding yields eight roles, which we name by jointly
+anchoring on Etherscan labels and structural statistics
+(Table~\ref{tab:typology}). Two findings stand out. First, the core
+infrastructure exhibits a \emph{two-layer} structure: a dense, highly
+concentrated cluster (cluster~7: 265 nodes, 5.3\% core rate, median 52
+counterparties) coexists with a broad, low-density layer (cluster~4: 1409
+nodes containing 46 DEX-labeled addresses). Second, a distinct
+whale/hoarder cluster (cluster~5) is the only group with substantial median
+balance ($183.8$) despite a low median counterparty count, capturing
+addresses that accumulate rather than route.
+
+\begin{table*}[!tbp]
+\centering
+\caption{Role typology from clustering the GNN embedding ($10^4$ graph).
+Clusters are named by combining label composition with structural
+statistics. ``Core rate'' is the fraction of \texttt{is\_core} nodes.}
+\label{tab:typology}
+\begin{tabular}{clcccc}
+\toprule
+Cluster & Role & Size & Core rate & Med.\ cp. & Med.\ bal. \\
+\midrule
+7 & Core infrastructure (dense)   & 265  & $5.3\%$ & 52 & 0.33 \\
+4 & DEX broad layer               & 1409 & $3.3\%$ & 6  & 0 \\
+5 & Whales / hoarders             & 1892 & $0.3\%$ & 2  & 183.8 \\
+1,6 & Active (general)            & 551 / 2054 & $\sim0.4\%$ & 4 & 0 \\
+0,2,3 & Retail / leaf             & 1559 / 1313 / 833 & $\sim0\%$ & 2--3 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure*}[!tbp]
+  \centering
+  \includegraphics[width=0.47\linewidth]{fig_c3_clusters_LINK.pdf}
+  \hfill
+  \includegraphics[width=0.47\linewidth]{fig_c3_clusters_UNI.pdf}
+  \caption{The eight structural roles obtained by clustering the GNN
+  embedding on each ledger, positioned by core rate and median balance;
+  bubble area is proportional to cluster size. Both ledgers resolve a single
+  small infrastructure cluster---$169$ nodes on LINK, $154$ on UNI---that is
+  simultaneously highest in core rate and in median balance, above a broad
+  periphery of retail addresses. The cluster-level association between
+  wealth and structural position does not carry to individual addresses,
+  where the two are statistically independent
+  (Section~\ref{sec:discussion}).}
+  \label{fig:c3}
+\end{figure*}
+
+\paragraph{Hidden brokers.}
+We define hidden brokers as nodes that are structurally core yet hold little
+balance and carry no external label---power holders sitting on critical
+paths without accumulating wealth. Operationally, a node qualifies if it
+falls in the top $1\%$ of the \texttt{is\_core} classifier score, holds a
+balance at or below the median, carries no external label, and additionally
+transacts with at least five distinct counterparties and has non-zero
+sampled betweenness. The last two conditions exclude degenerate cases: an
+earlier specification without them admitted single-counterparty vanity
+addresses that cannot, by construction, sit on any path.
+
+Because a hard percentile cut is unstable under the stochasticity of GNN
+training, we do not report a single run. We train ten embeddings from
+independent initialisations, convert each classifier score to a percentile
+rank, average the ranks, and cut the top $1\%$ once. This yields $30$
+brokers on LINK and $18$ on UNI. A stricter alternative---requiring
+selection in at least half of the individual runs---yields $23$ and $14$,
+and the intersection of the two criteria yields $22$ and $13$. We report the
+rank-ensemble set as the main specification and the intersection as a
+high-confidence subset, and we give the full selection-frequency
+distribution in Section~\ref{sec:brokerstability}, because the instability
+is itself informative: of the $87$ LINK nodes selected in at least one run,
+$48$ appear in no more than two.
+
+Matched against a betweenness-based selection of the same size drawn from
+the same eligibility pool, the two criteria agree on $7$ of $30$ nodes on
+LINK ($23\%$) and $8$ of $18$ on UNI ($44\%$). Note that at equal set size
+each method necessarily has as many unique selections as the other, so the
+comparison licenses a statement about \emph{overlap} but not about one
+method finding more brokers than the other.
+
+We manually verified every address in the union of the two broker sets
+through multi-source on-chain forensics (Etherscan name tags, verified
+source code, and deployer attribution), $36$ addresses in total. Ten of the
+$30$ LINK brokers and seven of the $18$ UNI brokers resolve to a named
+protocol---DEX aggregators, swap routers, and algorithmic solvers---as
+summarised in Table~\ref{tab:brokers}. Representative examples include the
+1inch Aggregation Router~V6 and Aggregation Executor~5, MetaMask Swaps
+Spender, the Uniswap~X (Rizzolver) solver, two distinct Universal Router
+deployments, KyberSwap's Aggregator Executor, Velora's Augustus router, and
+the OKX DEX Router, together with two contracts attributable to the
+0x~Protocol (verified source, deployer \texttt{deployer.zeroexprot...}, no
+public name tag). All share the defining signature of a hidden broker: they
+intermediate a very large number of counterparties (up to $230$) while
+holding zero token balance, forwarding routed value to off-chain treasuries
+rather than accumulating it.
+
+The remainder divide into two groups. Five LINK contracts and their UNI
+counterparts route substantial volume between DEX pools and aggregators but
+carry no name tag and no verified source; we record them as unlabelled
+routing contracts rather than attributing them. Four are high-frequency
+arbitrage contracts---between $2.5\times10^4$ and $1.3\times10^5$
+transactions each, one deployed by an address Etherscan tags as an MEV
+builder---which we label as MEV bots and, in the entity-resolution of
+Section~\ref{sec:entity}, deliberately leave unmerged, since two bots are
+not one firm.
+
+Two observations reinforce the value of the GNN. First, several of these
+routers (e.g., 1inch~V6, Uniswap~X, Uniswap~V4) postdate the label snapshot
+and are therefore \emph{absent from the external labels}, yet are recovered
+purely from structure---direct evidence that the method surfaces real
+infrastructure missed by label databases. Against the same eligibility
+filter, an equally-sized node2vec selection recovers no named protocol at
+all on either ledger, against $33\%$ and $39\%$ for the GNN; the two
+embeddings rank different populations, and only one of them ranks unlabelled
+infrastructure highly. Second, the procedure also
+flagged one address subsequently tagged as a phishing contract
+(\texttt{0xa819...bcdd}) and a small number of MEV bots; rather than
+false positives, these illustrate that ``structural coreness without
+custody'' is a signature shared by both legitimate routers and adversarial
+automation---a distinction we return to in the Discussion. Verification must be conducted on the
+token-transfer view rather than the default transaction view of a block
+explorer, since contract-to-contract routers register few of the latter;
+Section~\ref{sec:limitations} records the consequences of overlooking this.
+
+\begin{table*}[!tbp]
+\centering\small
+\caption{Manually verified hidden brokers (subset, ranked by
+counterparties). The GNN assigns all of them a core probability above
+$0.98$ despite zero token balance; the majority are non-custodial DeFi
+routing infrastructure.}
+\label{tab:brokers}
+\begin{tabular}{lcl}
+\toprule
+Address (abbrev.) & Counterparties & Verified identity \\
+\midrule
+\texttt{0x7f54...be8a} & 313 & Suspected 0x Protocol router \\
+\texttt{0x74de...6631} & 277 & MetaMask: Swaps Spender \\
+\texttt{0x1111...42a65} & 239 & 1inch: Aggregation Router V6 \\
+\texttt{0x225a...dc17} & 177 & Uniswap X: Rizzolver (solver) \\
+\texttt{0x6a00...1068} & 120 & Velora: Augustus V6.2 \\
+\texttt{0x66a9...b8af} & 105 & Uniswap V4: Universal Router \\
+\texttt{0x28b1...a183} & 91 & OKX: DEX Router 6 \\
+\texttt{0xd78d...3bae} & 70 & Mayan: Swift v2 Destination \\
+\texttt{0xbc1d...c973} & 48 & Bitget: DEX Aggregator \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% ------------------------------------------------------------
+\subsection{Case Study: A Coordinated Phishing Airdrop on LINK}
+\label{sec:w7}
+
+The remaining analysis in this section is a single-asset case study. It is
+reported for LINK only: no comparable coordinated event occurs in the UNI
+window, so the episode illustrates the pipeline's diagnostic behaviour
+rather than a cross-token regularity.
+
+The temporal pipeline automatically flags window~7 of the LINK series as
+anomalous: $610{,}228$ transfers against a median of $51{,}766$ in normal
+weeks, an almost twelve-fold increase. Tracing the source reveals a
+coordinated phishing airdrop. Thirty-eight contracts each emit exactly
+$10{,}000$ transfers---$380{,}000$ in total, $62\%$ of the window's
+volume---with $94\%$ of that activity falling within two days. The window as
+a whole reaches $549{,}223$ distinct recipients, of which $97.5\%$ receive a
+single transfer of an identical token amount. The round-numbered emission
+counts are themselves diagnostic: automated scripts terminate on a counter,
+organic behaviour does not.
+Etherscan confirms these as airdrop contracts impersonating Chainlink. The
+event produces a sharp V-shaped shock on the receiving side: the
+receiver-side flow Gini rises from $0.983$ to
+$0.999$ and the top-1\% share from $82\%$ to $99.8\%$, before fully
+recovering within a single subsequent week (deviation from baseline
+$0.004$). Even a 549{,}000-address coordinated injection fails to durably
+alter the concentration structure, underscoring that the extreme inequality
+we document is a structural steady state rather than a transient artifact.
+
+The episode also separates the two measurement scales cleanly. The flow
+Gini spikes because half a million new addresses each receive a single
+transfer, which maximally disperses the recipient distribution. The
+value-weighted routing HHI is almost unmoved over the same window, because
+each injected transfer carries a negligible amount. An event can therefore
+saturate a distributional measure while leaving market structure untouched
+---a concrete demonstration that the Gini coefficient and the HHI are not
+substitutes, and that reporting either alone would have mischaracterised
+the week.
+
+
+% SECTION 6: DISCUSSION
+% =========================================================================
+\FloatBarrier
+\section{Discussion}
+\label{sec:discussion}
+
+This section discusses the economic, institutional, and social implications of the empirical findings. The analysis proceeds in four steps: we first compare the wealth and transactional inequality of the LINK network with sovereign countries, then shift to a functional comparison using the Herfindahl-Hirschman Index (HHI), interpret the GNN role typology, and conclude with a re-examination of what ``decentralization'' means in practice.
+
+\subsection{Wealth and Transactional Concentration: Gini, Tops, and Comparison Limitations}
+The empirical results confirm extreme inequality within both networks: for LINK, the static balance Gini is $0.990$ and the mean weekly flow Gini is $0.979$. The top 10 addresses control $32.9\%$ of the total token balance, while the top $1\%$ account for $93.2\%$ of the balance and $81.1\%$ of weekly outflow. The UNI governance token is more unequal still by holdings---a balance Gini of $0.998$, with the top 10 addresses holding $51.7\%$ and the top $1\%$ holding $98.4\%$ of supply---but less unequal by flow (weekly flow Gini $0.969$, top-$1\%$ outflow share $70.7\%$).
+
+Benchmarked against the \textbf{UBS Global Wealth Report (2024)} \cite{ubs2024wealth} and macro-financial aggregates, this wealth concentration significantly exceeds that of traditional sovereign economies:
+\begin{itemize}
+    \item The LINK wealth Gini (0.990) exceeds both the United States (0.75) and South Africa (0.82) \cite{ubs2024wealth}. The on-chain top 1\% wealth share (93.2\%) is nearly 3 times the U.S. household top 1\% share ($\sim 32\%$) \cite{fed2023dfa}.
+    \item Restricting the comparison to liquid financial assets (M3/M4 money supply) shows the U.S. liquid savings Gini is estimated at 0.78--0.86 \cite{bricker2023scf}, still falling below the LINK network's 0.990.
+    \item \textbf{Gold benchmark.} Physical gold, which like blockchain tokens has no central issuer, displays a global ownership Gini of roughly 0.85--0.90, with nine countries holding $\sim$70\% of official reserves \cite{wgc2024gold}. While gold historically suffered from high transaction costs (assaying, transport, vault storage) that constrained participation and reinforced concentration, tokens inherit this decentralized issuance model but enjoy near-zero marginal transaction costs. That the LINK ledger ($Gini = 0.990$) exceeds gold's concentration suggests that removing historical friction does not automatically prevent extreme wealth polarization.
+    \item \textbf{Fintech equity benchmark.} The most apt equity baseline is the shareholder structure of Fintech and payment processors (Visa, Mastercard, PayPal), where institutional custodians (Vanguard, BlackRock, State Street) hold 75--85\% of equity and the top 10 shareholders control 50--60\% of shares ($Gini > 0.95$) \cite{sec13f2024fintech}. The LINK balance distribution ($Gini = 0.990$) is structurally comparable.
+\end{itemize}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig_lorenz.pdf}
+  \caption{Lorenz curves for both token balance distributions against
+  traditional asset benchmarks. LINK ($Gini = 0.990$) and UNI
+  ($Gini = 0.998$) lie below every baseline: U.S.\ household wealth
+  ($Gini \approx 0.75$) \cite{ubs2024wealth}, physical gold bullion
+  ($\approx 0.90$) \cite{wgc2024gold}, and public financial-technology
+  corporate equity ($\approx 0.95$) \cite{sec13f2024fintech}. The token
+  curves are computed from the full address-level ledger; the three
+  benchmarks are parametric curves $L(p) = p^{(1+G)/(1-G)}$ calibrated to the
+  Gini coefficients reported in those sources, shown for scale rather than
+  as reconstructions of the underlying microdata.}
+  \label{fig:lorenz_fintech}
+\end{figure}
+
+\subsection{Market Structure: Routing Contestability}
+\label{sec:hhi}
+Rather than comparing LINK to the macro-wealth of a country, a more
+logically rigorous approach is to evaluate the network as a \textbf{financial
+clearing and payment infrastructure}. This functional alignment requires a
+shift from social wealth distribution metrics (Gini) to industrial market
+concentration measures---specifically, the \textbf{Herfindahl--Hirschman
+Index (HHI)} \cite{doj2010horizontal}. Under DOJ guidelines, a market is
+classified as \textit{unconcentrated} if $HHI < 1{,}500$,
+\textit{moderately concentrated} if $1{,}500 \le HHI \le 2{,}500$, and
+\textit{highly concentrated} if $HHI > 2{,}500$.
+
+\subsubsection{Computation Methodology}
+Following standard antitrust practice, each unique Ethereum address is
+treated as one market participant. Two HHI scores are reported, both on the
+standard DOJ $0$--$10{,}000$ scale as $\sum_i (100 s_i)^2$.
+
+\begin{itemize}
+    \item \textbf{Balance HHI}: the share of address $i$ is
+    $s_i = b_i / \sum_j b_j$, where $b_i$ is the token balance at the end of
+    the window and the denominator sums over \emph{all} addresses with
+    strictly positive balance ($885{,}011$ for LINK, $386{,}029$ for UNI).
+    This is the same population used for the Gini coefficient and the
+    top-$k$ shares reported alongside it, so that the four ownership
+    statistics describe one and the same set of addresses.
+    \item \textbf{Flow HHI}: within each weekly window $w$, the share of
+    address $i$ is $s_{i,w} = f_{i,w} / \sum_j f_{j,w}$, where $f_{i,w}$ is
+    the total outflow sent by $i$ during $w$, computed on the aggregated
+    edge weights of Equation~\ref{eq:edgeweight}. Only sender-side flows are
+    counted, to avoid double-counting each transfer. The reported
+    $HHI_{\text{Flow}}$ is the mean of the $13$ weekly scores.
+\end{itemize}
+
+Two aspects of this construction are discretionary rather than dictated by
+the data, and we make them explicit because both turn out to matter. First,
+temporal aggregation: averaging thirteen weekly scores is not the same as
+computing one score on the pooled 90-day flow, and the two differ by a factor
+of $1.83$ for LINK ($421$ versus $230$) and $1.39$ for UNI ($386$ versus
+$277$). We report the weekly mean because market structure is a property of
+the period over which participants actually compete, and a single 90-day pool
+averages away the entry and exit that concentration is meant to capture; the
+pooled figure appears in Appendix~\ref{app:sensitivity}. Second, and more
+consequentially, standard antitrust practice treats each participant as one
+economic actor, whereas an address is not an actor but an account. We return
+to this in Section~\ref{sec:entity}.
+
+\subsubsection{Empirical Results}
+Our calculations yield a balance HHI of \textbf{135} for LINK and
+\textbf{872} for UNI, and a mean weekly flow HHI of \textbf{421} for LINK and
+\textbf{386} for UNI. All four fall below the DOJ unconcentrated threshold.
+
+\begin{itemize}
+    \item \textbf{Asset holding (LINK $135$ vs.\ UNI $872$).} Despite Gini
+    coefficients of $0.990$ and $0.998$, both balance distributions are
+    classified as \textit{unconcentrated}; LINK sits below the U.S.\
+    commercial banking deposit market ($HHI \approx 935$)
+    \cite{ffiec2023bhc}. The top $10$ addresses hold $32.9\%$ of LINK and
+    $51.7\%$ of UNI supply.
+
+    We caution against reading the six-fold gap between the two tokens as an
+    economic difference. Issuer-controlled supply accounts for $21.0\%$ of
+    observed LINK (seven wallets labelled as non-circulating reserve) and
+    $28.0\%$ of observed UNI (the governance Timelock and the token
+    distributor), and the UNI burn address holds a further $10.8\%$.
+    Excluding burn and issuer addresses brings the two ledgers to $115$ and
+    $109$ respectively---a difference of $6\%$. The headline contrast is
+    therefore attributable mainly to how much of each supply the protocol
+    holds itself, not to concentration among market participants.
+
+    \item \textbf{Traffic routing (LINK $421$ vs.\ UNI $386$).} Both ledgers
+    are classified as unconcentrated in routing. Weekly scores range from
+    $158$ to $1{,}147$ for LINK and $173$ to $593$ for UNI; no single week on
+    either ledger reaches the moderate band under address-level accounting.
+
+    \item \textbf{The Gini--HHI divergence.} The coexistence of extreme Gini
+    ($0.990$, $0.998$) with low flow HHI ($421$, $386$) is the central
+    quantitative finding. The two statistics answer different questions: the
+    HHI is a sum of squared shares and is dominated by the largest few
+    participants, while the Gini describes the shape of the cumulative
+    distribution across all of them. A ledger can be simultaneously very
+    unequal in the long tail and unconcentrated at the head. Traditional
+    financial rails display the opposite pattern---card clearing
+    (Visa/Mastercard, $HHI = 5{,}150$) \cite{nilson2024cards} and LPMCL gold
+    clearing ($HHI \approx 3{,}500$) \cite{lbma2023clearing} are dominated by
+    two to four entities commanding $25$--$90\%$ of their markets.
+\end{itemize}
+
+\subsubsection{Entity Resolution and the Limits of Address-Level Accounting}
+\label{sec:entity}
+Treating one address as one participant understates concentration whenever a
+single operator controls several addresses, which on a public ledger is both
+cheap and common. To bound this we resolve addresses to entities using the
+archived label snapshot, merging addresses whose labels share an
+operator---all wallets tagged \texttt{Binance}, all contracts tagged
+\texttt{Uniswap}---while leaving generic tags such as \texttt{MEV Bot}
+unmerged, since two bots are not one firm.
+
+The effect is large and asymmetric across statistics. For LINK the balance
+HHI rises from $135$ to $562$ ($4.16\times$), driven almost entirely by seven
+equal-sized reserve wallets collapsing into one participant, while the
+balance Gini is unchanged to four decimal places ($0.9898$ in both cases).
+The same pattern holds for UNI ($872 \rightarrow 962$; Gini $0.9976$
+unchanged). This is a general property rather than a quirk of these data:
+because the HHI squares shares, merging the head is amplified
+quadratically, whereas the Gini integrates over a distribution of nearly nine
+hundred thousand addresses in which a handful of merges is invisible. Any HHI
+computed on address-level blockchain data should be read as a range rather
+than a point estimate.
+
+For flow, entity resolution raises the mean weekly HHI from $421$ to $654$
+for LINK ($1.55\times$) and from $386$ to $667$ for UNI ($1.73\times$). One
+LINK window reaches $1{,}509$, marginally above the DOJ threshold; the
+remaining twelve windows, and all thirteen UNI windows, stay below it. The
+largest single entity is the same on both ledgers: addresses tagged
+\texttt{Binance} account for $18.4\%$ of mean weekly outflow on LINK across
+five addresses and $19.8\%$ on UNI across five, contributing $337$ and $393$
+HHI points---roughly half of the entity-level index on each ledger.
+
+Two caveats bound the interpretation. First, our label snapshot covers
+$33.5\%$ (LINK) and $31.5\%$ (UNI) of mean weekly outflow; unlabelled
+addresses remain separate participants, so the entity-level figures are a
+\emph{lower bound} on true concentration, not an adversarial upper bound.
+Second, exchange addresses hold and move customer assets rather than their
+own, so merging them measures custodial rather than beneficial
+concentration. We therefore state the conclusion in the form the evidence
+supports: under address-level accounting both routing layers are
+unconcentrated in every window; under partial entity resolution LINK reaches
+the moderate band in one window of thirteen; and the figure under complete
+entity resolution is higher still. What does not change under any
+specification is the distance between the ownership and routing layers.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{fig_hhi_benchmark.pdf}
+  \caption{Herfindahl--Hirschman Index benchmarked against traditional
+  clearing infrastructure, on a logarithmic scale. Our measurements are
+  shown in colour: LINK balance ($135$), UNI balance ($872$), and weekly
+  flow for both ledgers at address level ($421$, $386$) and after partial
+  entity resolution ($654$, $667$). Reference points are U.S.\ commercial
+  banking ($935$--$1{,}060$) \cite{ffiec2023bhc}, Canadian and Swedish
+  banking ($2{,}250$ and $2{,}400$), LPMCL gold clearing ($3{,}500$)
+  \cite{lbma2023clearing}, and Visa/Mastercard ($5{,}150$)
+  \cite{nilson2024cards}. Dashed lines mark the DOJ thresholds separating
+  unconcentrated, moderately concentrated and highly concentrated markets
+  \cite{doj2010horizontal}. Routing concentration for both tokens sits
+  inside the unconcentrated band despite extreme ownership inequality, and
+  remains there after entity resolution.}
+  \label{fig:hhi_comparison}
+\end{figure}
+
+\subsection{Structural Role Decomposition and the Wealth-Power Divergence}
+The aggregate concentration metrics above describe the \textit{degree} of inequality, but they say little about \textit{who} occupies which position and why. The GNN clustering decomposes the network into eight functional roles that, taken together, paint a more granular picture of how value flows through the ledger.
+
+\subsubsection{The Two-Layer Clearing Core}
+The densest stratum of the network is a single small cluster. On LINK it comprises $169$ nodes with a median of $80$ counterparties and a core rate of $10.1\%$; on UNI, $154$ nodes, median $78$ counterparties, core rate $8.4\%$. It is populated by major DEX liquidity pools, CEX hot wallets and router contracts that settle the bulk of high-value transfers. A second, broader cluster ($1{,}492$ nodes on LINK, median $7$ counterparties, core rate $3.3\%$) serves as a wide-distribution buffer, fanning transactions out from the dense core to the broader user base. Together these form a ``hub-and-spoke'' topology functionally analogous to the correspondent-banking tiering observed in traditional interbank payment systems \cite{kindleberger2011manias}. The near-identical dimensions of the infrastructure cluster on two functionally unrelated ledgers is itself notable: roughly $1.6\%$ of each network's core addresses carry its clearing function.
+
+\subsubsection{Wealth and Structural Power Are Orthogonal}
+The relationship between what an address holds and where it sits is best stated at the level of individual addresses, where it can be measured directly. Across addresses with a positive balance, the Spearman correlation between balance and counterparty count is $+0.081$ on LINK and $+0.032$ on UNI; between balance and betweenness it is $-0.028$ and $-0.051$. All four are indistinguishable from zero on samples of thousands of nodes. Wealth and structural power are not inversely related on these ledgers, nor positively---they are close to \emph{orthogonal}.
+
+This orthogonality is the mechanism behind the paradox this paper documents. A Gini coefficient of $0.99$ constrains how token holdings are distributed; it says nothing whatever about who routes them, precisely because the two quantities are uncorrelated. Extreme ownership inequality and a contestable clearing layer are not in tension; they are independent facts about independent dimensions. In programmable ledger economies, holding capital does not confer operational control---a divergence qualitatively sharper than in equity markets, where large shareholders typically exert governance influence proportional to their stake.
+
+We record one correction to an earlier version of this analysis. Under an unaggregated edge-weight construction, the infrastructure cluster on LINK appeared to hold essentially no balance (median $0.33$), which suggested that wealth and clearing function were borne by disjoint clusters. Under the corrected construction of Equation~\ref{eq:edgeweight} the infrastructure cluster records a median balance of $3{,}934$ on LINK and $3{,}405$ on UNI: the addresses that clear the ledger also hold a good deal of it. The cluster-level separation does not survive; the address-level orthogonality does, and it is the stronger claim.
+
+\subsubsection{The Hidden Broker Phenomenon and the Tollbooth Economy}
+The remaining clusters comprise active retail users and leaf-node consumers. Within this periphery, the GNN identifies $30$ addresses on LINK and $18$ on UNI that defy conventional classification: they hold no meaningful balance yet rank in the top $1\%$ of structural-core score under a ten-seed rank ensemble. On-chain forensics resolve a third of them to non-custodial smart contracts---DEX aggregator routers (1inch, KyberSwap, Bitget), wallet swap interfaces (MetaMask Swaps Spender), Uniswap's Universal Router and X solver, and cross-chain routers (LI.FI)---that move liquidity across fragmented pools without ever taking custody. The remaining two-thirds exhibit the same behavioural signature but carry no public identity of any kind.
+
+Economically, these entities instantiate a \textit{Tollbooth Economy}: they extract per-transaction service fees (e.g., MetaMask's 0.875\% swap markup) and immediately forward the proceeds to off-chain treasuries, leaving the contract itself perpetually at zero balance. This operating model is invisible to both classical wealth rankings and standard centrality heuristics, because the contracts neither accumulate assets nor maintain persistent graph edges across time windows. The GNN captures their role precisely because it encodes multi-hop neighborhood structure and transactional velocity into the embedding space, pulling these ``invisible gatekeepers'' out of the noise.
+
+The coexistence of passive mega-whales and zero-balance structural gatekeepers implies that on-chain power is not a single continuum but a two-dimensional space: one axis measuring capital ownership, the other measuring routing control. Any regulatory or governance framework that attends to only one dimension will systematically mischaracterize the network's actual power distribution.
+
+\subsection{Synthesis: The Gini-HHI Paradox and Its Implications}
+Evaluating the routing layer on its own structural terms confirms that clearance is genuinely contestable. By the Gini metric alone, both LINK ($0.990$) and UNI ($0.998$) ledgers display extreme wealth inequality---exceeding any sovereign nation. Yet by the HHI metric, weekly routing concentration for both networks ($HHI_{\text{Flow}} = 421$ and $386$ at address level, $654$ and $667$ after partial entity resolution) falls inside the DOJ \textit{unconcentrated} zone, placing them below U.S. commercial banking ($HHI \approx 935$) and far below traditional payment incumbents such as Visa/Mastercard ($HHI = 5{,}150$) and LPMCL gold clearing ($HHI \approx 3{,}500$).
+
+This paradox reflects a fundamental structural property of permissionless token ledgers. Because Web3 ecosystems involve hundreds of thousands of active addresses, even a heavily skewed Pareto distribution disperses market share across so many participants that no single router approaches monopolistic dominance under standard antitrust criteria. Traditional clearing systems, by contrast, concentrate identical functions among 2--10 licensed institutions, producing oligopolistic HHI scores by construction.
+
+\subsection{The Rule Layer: Who Can Revoke Contestability}
+\label{sec:governance}
+The two scales analysed so far answer two questions---who owns the supply,
+and who moves it. A referee of an earlier draft posed a third that neither
+can address: on a token whose holders vote in proportion to their balance,
+what is the standing of a contestable routing layer if a small cohort retains
+the authority to change the rules under which that routing occurs? The
+question is well founded. The HHI measures who is doing business; it does
+not measure who can amend the terms of business. We therefore add a rule
+layer to the analysis, using an established instrument rather than a new one.
+
+Because governance is a threshold game---a proposal either reaches quorum or
+it does not---the appropriate statistic is not a dispersion index but the
+Nakamoto coefficient \cite{grajales2022measuring}, the minimum number of
+participants whose combined holdings reach a decision threshold. Uniswap
+governance sets a proposal threshold of $2.5\times10^6$ UNI ($0.25\%$ of
+supply) and a quorum of $4\times10^7$ ($4\%$).
+
+\paragraph{The coefficient is as specification-dependent as the HHI.}
+Counting all addresses, a single address holds enough UNI to meet quorum
+unaided. That address is the governance Timelock itself, and the second
+largest is the burn address; neither can vote. Excluding addresses that
+cannot cast a vote raises the coefficient to two, and excluding custodial
+exchange addresses---which hold customer assets and do not, as a rule, vote
+them---leaves it at two while reducing the number of addresses individually
+above the proposal threshold from $55$ to $47$ and their combined share from
+$73.8\%$ to $29.1\%$. The unadjusted $73.8\%$ figure, which an earlier draft
+reported, is $38.7$ percentage points inflated by the Timelock and the burn
+address. The same discipline the HHI requires is required here.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.86\linewidth]{fig_governance_nakamoto.pdf}
+  \caption{Nakamoto coefficient for UNI governance quorum under three
+  address populations. Counting all addresses, one suffices---but that
+  address is the governance Timelock, which cannot vote. Excluding
+  non-voting addresses and then custodial exchange wallets gives the figures
+  we report. The coefficient is as specification-dependent as the HHI, and
+  for the same reason: both are computed over a set whose membership is a
+  modelling choice.}
+  \label{fig:nakamoto}
+\end{figure}
+
+
+\paragraph{The rule layer and the routing layer are largely disjoint.}
+Fifty-two addresses hold enough UNI to open a proposal and are capable of
+voting. Thirty-seven of them---$71\%$---sent and received nothing at all
+during the 90-day window. To test whether those who make the rules also
+operate the network, we compare the eligible set against the routing layer
+defined by weekly outflow, which imposes no balance condition of any kind.
+Among the ten largest senders by mean weekly outflow, two are
+proposal-eligible; among the top fifty, five; among the top hundred, seven.
+The median balance of the fifty largest senders is $45{,}504$ UNI, fifty-five
+times below the proposal threshold. The overlap that does exist consists
+almost entirely of exchange addresses, which move customer assets and hold
+them on customers' behalf.
+
+We stress the construction of this test because a natural alternative is
+circular. Comparing proposal-eligible addresses against the hidden brokers
+of Section~\ref{sec:c3} would yield an overlap of exactly zero, but only
+because a hidden broker is \emph{defined} as holding at most a median
+balance while proposal eligibility \emph{requires} $2.5\times10^6$ tokens.
+That comparison cannot fail, and therefore says nothing. The outflow-based
+test can fail and does not.
+
+\paragraph{How much of the routing layer is actually revocable.}
+The referee's objection has a quantitative form: if Uniswap governance can
+rewrite the rules the routing layer follows, its contestability is
+conditional. We bound the exposure on the dimension we observe. Of mean
+weekly UNI outflow, $0.71\%$ originates from contracts the governance
+Timelock directly controls, and a further $0.14\%$ from other
+Uniswap-deployed contracts, most of which are immutable and cannot be
+amended by governance in any case. A remaining $68.5\%$ flows from addresses
+our label snapshot does not identify, which bounds the upper end of the
+range rather than establishing it.
+
+This measurement has a boundary that must be stated plainly. It covers UNI
+\emph{token transfers}, not swap volume in Uniswap pools. A governance
+decision to activate the protocol fee switch would affect trading that
+settles in those pools regardless of which router carried it, and that
+channel lies outside our data. What we can say is narrower and still
+informative: on the dimension of UNI token routing, the share directly under
+governance control is under one percent.
+
+\paragraph{Contestability is conditional, not structural.}
+Taken together these results qualify the paper's central finding rather than
+overturning it. The routing layer is genuinely contestable: many mutually
+competing intermediaries, low measured concentration, weekly turnover in the
+leading positions. But on a token-weighted governance ledger that
+contestability sits inside a rule layer that a small, largely inactive cohort
+can amend. The two layers are almost disjoint in membership, which means
+neither can be inferred from the other---and it means that a
+concentration statistic computed on either one alone will mischaracterise
+the system.
+
+Three limits apply to the governance figures. Holding is not voting: UNI
+requires explicit delegation, so our counts measure an upper bound on
+potential voting power. Uniswap's own governance documentation reports that
+many large delegates participate well below half the time and some not at
+all, which implies that effective decision power is more concentrated than
+our upper bound, not less. Custodial addresses do not vote their holdings and
+are reported separately for that reason. Finally, with two tokens and only
+one of them token-governed, we present this as a description of a single
+protocol's rule layer, not as a detector that classifies protocols. LINK has
+no token-weighted governance---oracle node operators are admitted by
+Chainlink Labs---so the comparison is itself informative: of two ledgers
+whose routing layers are equally contestable, only one has a rule layer
+capable of revoking that contestability.
+
+\subsection{The Ontology of Decentralization: Rule Neutrality vs.\ Residual Vulnerability}
+\label{sec:ontology}
+A proper evaluation of public blockchains requires clarifying what ``decentralization'' actually means. More precisely, decentralization is not egalitarian wealth parity; it is the decentralization of underlying institutional mechanisms---rule neutrality, permissionless access, and trustless execution \cite{wood2014ethereum}.
+
+Under this definition, empirical evidence strongly supports the conclusion that mechanism decentralization in Web3 remains intact. Low HHI scores confirm that no single participant commands sufficient market share to constitute a monopoly. Dominant routing hubs (such as 1inch, Binance, or Uniswap V4) and mega-whales hold no administrative power to rewrite consensus rules, freeze user balances, or block rival developers from deploying competing smart contracts.
+
+However, the extreme Gini and topological features carry residual risks that standard value-weighted HHI metrics cannot detect:
+\begin{enumerate}
+    \item \textbf{Governance plutocracy}: In token-weighted governance, a balance Gini of $0.998$ means that the capacity to amend protocol rules rests with a very small cohort. Market-share concentration is low while governance concentration is extreme. Because this is not a residual risk but a distinct layer with its own measurement problem, we treat it separately in Section~\ref{sec:governance}.
+    \item \textbf{Operational Dependence on Hidden Brokers}: The GNN identifies $30$ and $18$ zero-balance contracts that serve as critical routing intermediaries, twelve of them common to both ledgers. Although their collective value-weighted market share is dispersed (yielding a low HHI), the network's functional dependence on these non-custodial routers creates operational fragility: a bug or exploit in a shared router contract can disrupt clearing on multiple tokens at once, without ever triggering a traditional antitrust market-share alarm. That seven of the twelve shared routers carry no public label compounds the problem, since a supervisor working from label databases would not know they exist.
+    \item \textbf{Latent Fork-Selection Leverage}: While hard-forking code is technically open to anyone, the economic survival of a fork depends on a coordination game. The extreme Gini grants wealthy actors disproportionate Schelling point leverage. If a coalition of dominant exchanges and mega-custodians designates one fork branch as canonical, their capital commitment can tip the coordination equilibrium, even though no single entity constitutes a monopoly.
+\end{enumerate}
+
+% =========================================================================
+% SECTION 7: CONCLUSION & FUTURE WORK
+% =========================================================================
+
+\FloatBarrier
+\section{Limitations}
+\label{sec:limitations}
+
+Several constraints bound the interpretation of our results.
+
+\textbf{Scope of the comparison.} We analyse two tokens. All three
+contributions are replicated on both---the measurement instrument, the
+temporal analysis under both light and window-wise re-training protocols,
+and the role typology with broker identification---but two ledgers cannot
+establish universality across an asset class of thousands. Holding the
+observation window fixed removes market-regime effects as a confound, and
+the convergence of two functionally dissimilar assets on the same routing
+verdict is stronger evidence than a single case would provide; it
+nonetheless remains a comparison of two. The UNI
+transfer graph is also an order of magnitude smaller than LINK's
+($38{,}667$ versus $642{,}126$ active addresses), so the head-to-head
+structural comparison is conducted at the matched $10^4$ scale rather than
+at full scale.
+
+\textbf{Temporal coverage.} The 90-day window captures rich dynamics,
+including a coordinated phishing event, but cannot speak to concentration
+dynamics across full market cycles. Whether the routing contestability we
+document survives a prolonged bear market remains open.
+
+\textbf{Label coverage and label drift.} Newer infrastructure is
+systematically unlabelled in the public tag compilation we use. This works
+against us rather than for us---several routers recovered by the GNN
+postdate the snapshot---but it means the labelled positive set understates
+true infrastructure prevalence. A second and less obvious issue is that the
+compilation is updated continuously and silently: it held $29{,}945$ entries
+on 5 August 2026 and $29{,}772$ four days later. Since the \texttt{is\_core}
+anchor set is derived from it, an analysis run on two different days can
+yield different AUCs with no change to the code or the data. We fix a single
+snapshot and archive it (Section~\ref{sec:features}); studies that query
+such a database live should expect their supervised results to drift.
+
+\textbf{Balance is not time-resolved.} Balances are cumulative historical
+positions rather than per-window snapshots. Temporal analyses therefore use
+within-window flow rather than balance, and the two scales should not be
+read as measuring the same quantity at the same instant.
+
+\textbf{Approximate betweenness degrades on sparse graphs.} On the
+$6.4\times10^5$-node graph (mean degree $\approx 1.2$), sampled betweenness
+predicts \texttt{is\_core} at chance level, and increasing the pivot count
+from $500$ to $5{,}000$ does not repair it. This is a property of the
+topology---exchanges are star centres rather than path bridges---not an
+implementation defect, and it reinforces rather than undermines our claim
+that hand-crafted centrality is insufficient.
+
+\textbf{The GNN's AUC advantage does not survive scaling.} On
+\texttt{is\_core} the GNN's margin over dimension-matched structural
+features falls from $+0.016$ at $10^4$ to $-0.002$ at $6.4\times10^5$, and
+at no scale does it exceed one seed-level standard deviation. We do not
+claim an AUC advantage for the GNN over a well-specified hand-crafted
+feature set, and the ablation against node2vec shows that the decisive gap
+is between learned representations of any kind and classical centrality
+rather than between architectures. What does scale is the neighbourhood
+purity ratio ($2.69\times$, $2.64\times$, $2.48\times$), and it is on that
+quantity, together with the broker results it enables, that we rest the
+methodological claim.
+
+\textbf{Broker identification is stable in aggregate, not per node.}
+Because the broker criterion cuts a hard percentile, nodes near the boundary
+enter and leave across random initialisations: of the $87$ LINK addresses
+selected in at least one of ten runs, $48$ appear in no more than two, and
+only two appear in nine or more. Our rank-ensemble specification is
+deterministic given a fixed set of embeddings, but the embeddings themselves
+are trained on GPU, where the scatter operations underlying neighbourhood
+aggregation are non-deterministic; an independent re-training will not
+reproduce the set exactly. We archive the embeddings alongside the code and
+report the full selection-frequency distribution rather than a point count.
+
+\textbf{Entity resolution is partial, so concentration is a lower bound.}
+Our label snapshot covers about a third of weekly outflow on each ledger.
+Addresses it does not identify remain separate participants in the
+entity-level HHI, which therefore understates true concentration. We label
+this a lower bound throughout and avoid the phrase ``upper bound'' even
+where an adversarial reading might be tempting.
+
+\textbf{Verification requires the token-transfer view, not the transaction
+view.} Several brokers our method surfaces are contracts invoked internally
+by other contracts rather than directly by externally owned accounts. Their
+Etherscan \emph{Transactions} tab therefore shows only a handful of entries
+while their \emph{ERC-20 Token Transfers} tab---the view corresponding to
+our data source---shows tens of thousands. The gap is not marginal: among
+the brokers common to both ledgers, the most structurally central records
+six transactions against several thousand token transfers, and two others
+show three and fourteen against comparably large transfer counts. An earlier draft of this work
+mistakenly read the former view and provisionally flagged one broker as a
+data discrepancy; re-inspection of the token-transfer view confirmed the
+measurement in every case. We note this because it is a general hazard for on-chain
+verification: the default block-explorer view under-represents exactly the
+contract-to-contract routing activity that structural methods are designed
+to detect.
+
+\textbf{Concentration metrics are protocol-agnostic.} Neither the Gini
+coefficient nor the HHI distinguishes a protocol treasury contract from a
+private whale. This is not a hypothetical concern: issuer-controlled supply
+is $21.0\%$ of observed LINK and $28.0\%$ of observed UNI, and removing it
+along with the burn address brings the two ledgers' balance HHI from $135$
+and $872$ to $115$ and $109$. We report the unadjusted figures as the main
+specification, because deciding which contracts are ``protocol-controlled''
+is itself a judgement, and give the adjusted grid in
+Appendix~\ref{app:sensitivity}. Readers comparing our ownership figures with
+other studies should check which convention those studies adopt; the choice
+moves the number by a factor of eight on UNI.
+
+\FloatBarrier
+\section{Conclusion \& Future Work}
+\label{sec:conclusion}
+
+\subsection{Conclusion}
+This paper investigated the structural topology, economic concentration, and functional intermediation of the Chainlink (LINK) token network through a combination of dual-scale inequality metrics and unsupervised GNN role mining.
+
+On the measurement side, the central finding is a sharp Gini--HHI divergence: both ledgers exhibit extreme wealth inequality ($Gini = 0.990$ and $0.998$), yet when evaluated as industrial clearing infrastructure their balance and flow HHI ($135$ and $421$ for LINK, $872$ and $386$ for UNI) fall in the DOJ \textit{unconcentrated} zone---below traditional payment incumbents such as Visa/Mastercard ($HHI = 5{,}150$) and physical gold clearing ($HHI \approx 3{,}500$). This divergence demonstrates that token wealth polarization does not imply monopolistic market power: the large number of active participants disperses market share below antitrust thresholds even as the cumulative distribution is severely skewed, and the two quantities are close to statistically independent across addresses. The divergence is bounded, not unconditional---partial entity resolution raises the flow figures to $654$ and $667$, and on a token-governed ledger the routing layer's contestability is itself revocable by a rule layer with which it barely overlaps.
+
+On the structural side, the GNN embeddings reinforce this paradox from a micro-structural perspective. The zero-balance hidden brokers identified by the model---$30$ on LINK and $18$ on UNI, non-custodial router contracts and solvers---command disproportionate topological influence by bridging Burt's structural holes, while balance and structural position are statistically uncorrelated across the address population as a whole. Power in the network is thus neither proportional to wealth (as in equity markets) nor proportional to market share (as in classical oligopolies), but driven by structural positioning.
+
+Taken together, these findings support the conclusion that Web3 preserves protocol-level mechanism decentralization---no single actor can rewrite rules, freeze balances, or monopolize market access. The low HHI confirms that clearing competition remains structurally open. However, the extreme Gini introduces residual vulnerabilities in DAO governance (plutocracy), operational fragility (dependence on a small set of routing contracts), and latent fork-selection leverage---risks that are invisible to either metric in isolation but revealed by the dual-scale framework.
+
+\subsection{Future Work}
+Future research will pursue three key directions: (1) \textbf{reverse-engineering solver and aggregator routing algorithms} via on-chain call-trace analysis to estimate solver risk premiums and MEV bidding models; (2) \textbf{multi-chain and cross-layer flow analysis} extending our GNN framework to measure interoperability concentration across Chainlink CCIP and Layer-2 rollups; and (3) \textbf{dynamic temporal GNN architectures} (e.g., T-GCN, EvolveGCN) capable of real-time anomaly detection to provide automated early-warning metrics for systemic liquidity cascades.
+
+
+% =========================================================================
+% ELSEVIER REQUIRED DECLARATIONS
+% =========================================================================
+\section*{CRediT Authorship Contribution Statement}
+\textbf{Jintao Liu:} Conceptualization, Methodology, Software, Formal
+analysis, Data curation, Investigation, Visualization, Writing --- original
+draft, Writing --- review \& editing. \textbf{Zhimo Ji:} Conceptualization,
+Methodology, Formal analysis, Investigation, Writing --- original draft,
+Writing --- review \& editing. Both authors contributed equally to this
+work.
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests
+or personal relationships that could have appeared to influence the work
+reported in this paper. Neither author holds a financial position in the
+Chainlink (LINK) or Uniswap (UNI) tokens analysed here, nor any affiliation
+with the protocols, exchanges, or routing services identified in the
+analysis.
+
+\section*{Data Availability}
+All primary data are drawn from the public Ethereum ledger and are
+reproducible by anyone. Transfer records and balances were extracted from
+the \texttt{bigquery-public-data.crypto\_ethereum.token\_transfers} dataset
+via Google BigQuery; the exact extraction queries, the observation window
+(2026-03-26 to 2026-06-24), and the two token contract addresses are
+specified in Section~\ref{sec:data}. Entity labels are taken from a public
+Etherscan label snapshot. Derived artefacts---node features, learned
+embeddings, cluster assignments, and the identified broker sets---together
+with the analysis code are available at
+\url{https://github.com/Liu0916-star/GNN-Wallet-Clustering}. A preprint of
+this manuscript is deposited on arXiv under a CC BY-NC-ND license.
+
+\section*{Acknowledgments}
+%% ===================================================================
+%% TODO: 致谢正文待补（由 Hanzhi Wang 本人撰写／确认后填入）
+%% 原文备份：
+%%   The authors thank Dr. Hanzhi Wang (School of Computing and
+%%   Information Systems, The University of Melbourne) for helpful
+%%   discussions on scalable graph propagation and node proximity
+%%   computation.
+%% ===================================================================
+
+This research received no specific grant from any funding agency in the
+public, commercial, or not-for-profit sectors.
+
+\FloatBarrier
+\appendix
+\section{Sensitivity of the Concentration Measures}
+\label{app:sensitivity}
+
+Computing an HHI over an address ledger requires four discretionary
+choices. Table~\ref{tab:sensitivity} reports how each affects the result for
+both tokens.
+
+\begin{table*}[!tbp]
+\centering\small
+\caption{Sensitivity of the balance and flow HHI to four discretionary
+measurement choices. Values in bold are the main-text specification. Only
+entity resolution moves either token above the DOJ unconcentrated threshold
+of $1{,}500$, and then only in one weekly window of thirteen.}
+\label{tab:sensitivity}
+\begin{tabular}{llcc}
+\toprule
+Choice & Specification & LINK & UNI \\
+\midrule
+\multirow{2}{*}{Population (balance)}
+  & All positive balances      & \textbf{135}   & \textbf{872} \\
+  & Transfer-active only       & 135            & $2{,}336$ \\
+\midrule
+\multirow{3}{*}{Address type (balance)}
+  & All holders                & \textbf{135}   & \textbf{872} \\
+  & Excluding burn             & 135            & 949 \\
+  & Excluding burn and issuer  & 115            & 109 \\
+\midrule
+\multirow{2}{*}{Temporal aggregation (flow)}
+  & Weekly, then averaged      & \textbf{421}   & \textbf{386} \\
+  & Pooled over full window    & 230            & 277 \\
+\midrule
+\multirow{2}{*}{Flow direction}
+  & Sender-side outflow        & \textbf{421}   & \textbf{386} \\
+  & Receiver-side inflow       & 418            & 386 \\
+\midrule
+\multirow{2}{*}{Entity resolution}
+  & One address, one participant & \textbf{421} & \textbf{386} \\
+  & Labelled addresses merged    & 654          & 667 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig_concentration_sensitivity.pdf}
+  \caption{Balance HHI under four specifications of the holder population
+  and address type. The DOJ unconcentrated threshold is marked; no
+  specification of either ledger crosses it. The eight-fold spread on UNI
+  between the all-holder and issuer-excluded figures is the practical reason
+  we report the index as a range.}
+  \label{fig:sensitivity}
+\end{figure}
+
+Five observations follow.
+
+First, flow direction is immaterial: outflow and inflow specifications agree
+to within $1\%$ on both tokens, so the result does not depend on which side
+of the transfer is credited.
+
+Second, temporal aggregation matters and in the conservative direction.
+Pooling the full window \emph{lowers} measured concentration by a factor of
+$1.83$ on LINK and $1.39$ on UNI, so the weekly-averaged figure we report is
+the more concentrated of the two.
+
+Third, population scope matters only for UNI, where restricting to
+transfer-active addresses raises the balance HHI from $872$ to $2{,}336$.
+Only $4\%$ of UNI holders transacted during the window, so the active subset
+is dominated by treasury and routing contracts. For LINK, where $64\%$ of
+holders were active, the choice is immaterial to one decimal place.
+
+Fourth, excluding the burn address \emph{raises} UNI's balance HHI, from
+$872$ to $949$. This is arithmetic rather than anomaly. The burn address
+holds $10.76\%$ of observed supply, contributing $10.76^2 = 115.8$ points;
+removing it shrinks the denominator by the same factor, inflating every
+remaining share by $1/0.892$ and every squared share by $1.256$. The
+residual $872 - 115.8 = 756.0$ therefore rescales to $949.4$, which is what
+we observe. LINK's burn address holds $110$ tokens and its measures are
+unchanged to four decimal places. Excluding issuer-controlled supply as
+well brings the two ledgers to $115$ and $109$: a seven-fold gap in the
+headline figures collapses to a difference of $6\%$ once protocol holdings
+are set aside.
+
+Fifth, and most consequentially for interpretation, the HHI is highly
+sensitive to entity resolution while the Gini and top-$k$ shares are not.
+Chainlink distributes its non-circulating reserve across seven wallets of
+$3\times10^7$ LINK each; treating them as one participant raises the LINK
+balance HHI from $135$ to $562$, because the squared-share functional form
+amplifies head aggregation quadratically. Over the same specifications
+LINK's balance Gini moves only from $0.9898$ to $0.9871$ and its top-$1\%$
+share from $93.2\%$ to $91.4\%$; under entity resolution the Gini does not
+move at all to four decimal places. Because the number of participants is a
+free parameter under address-level accounting, an HHI computed on blockchain
+data should be read as a bounded range rather than a point estimate. Across
+the full range considered here, $109 \le HHI_{\text{Balance}} \le 562$ for
+LINK and $109 \le HHI_{\text{Balance}} \le 2{,}989$ for UNI, and
+$230 \le HHI_{\text{Flow}} \le 654$ and $277 \le HHI_{\text{Flow}} \le 667$
+respectively. Every balance specification and every mean flow specification
+remains inside the DOJ unconcentrated band; the single exception across all
+$26$ weekly windows on both ledgers is LINK's second window under entity
+resolution, at $1{,}509$.
+
+The Gini coefficients reported throughout use the standard discrete
+estimator over addresses with strictly positive balance; two independent
+implementations used during the analysis agree to six decimal places.
+
+\FloatBarrier
+\section{Reproducibility}
+\label{app:repro}
+
+Three details determine whether the numbers in this paper can be reproduced,
+and we state them because each caused a discrepancy at some point during the
+analysis.
+
+\paragraph{Edge weights.} Multiple transfers between the same ordered pair
+of addresses must be summed before graph construction
+(Equation~\ref{eq:edgeweight}). Standard graph libraries build a simple
+directed graph in which a repeated edge overwrites its predecessor's
+attribute rather than accumulating it. Because repeat interaction accounts
+for $90.9\%$ and $91.7\%$ of records in the core subgraphs, an unaggregated
+construction discards roughly $85\%$ of transferred volume, and the
+resulting weighted-degree and PageRank features correlate with the correct
+ones at only $0.80$--$0.83$.
+
+\paragraph{Label snapshot.} All supervised results are computed against a
+single archived snapshot of the Etherscan tag compilation (retrieved 26
+August 2026, MD5 \texttt{16792aac5afd}, $29{,}772$ entries after
+case-normalisation). Querying the live source will produce a different
+anchor set and therefore different AUCs.
+
+\paragraph{Non-determinism.} Embeddings are trained on GPU, where the
+scatter operations underlying neighbourhood aggregation do not have a fixed
+reduction order; seeding does not make them reproducible bit-for-bit. All
+GNN results are therefore reported as means over independent
+initialisations, and the broker sets as rank ensembles over ten of them. The
+trained embeddings, together with a fingerprint of the feature matrix and
+edge list they were derived from, are archived with the analysis code so
+that the reported figures can be recomputed exactly rather than
+approximately.
+
+
+\section*{Declaration of Generative AI and AI-assisted Technologies in the
+Writing Process}
+During the preparation of this work the authors used Anthropic's Claude to
+assist with drafting and editing English prose, with LaTeX formatting, and
+with writing and debugging the analysis and plotting scripts described in
+Sections~\ref{sec:data}--\ref{sec:exp}. All research questions, data
+extraction, experimental design, model configuration, conceptual framing and
+terminology, and interpretation of results were determined by the authors. All computations were executed by
+the authors on their own hardware, and every reported figure was traced back
+to the underlying result files. Manual on-chain verification of the broker
+addresses was performed by the authors. After using this tool, the authors
+reviewed and edited the content as needed and take full responsibility for
+the content of this publication.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{refs}
+
+\end{document}

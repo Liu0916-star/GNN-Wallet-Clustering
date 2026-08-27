@@ -1,0 +1,44 @@
+{
+  "ablation_A_no_feature": {
+    "gnn_nofeat_is_core": 0.5024,
+    "gnn_full_is_core": 0.9239,
+    "node2vec_is_core": 0.8904,
+    "interpretation": "GNN-no-feature collapses toward node2vec; GNN's edge over node2vec comes from node features"
+  },
+  "ablation_B_feature_groups": {
+    "full": {
+      "is_core": 0.9246,
+      "balance": 0.9098
+    },
+    "度(in/out_deg)": {
+      "is_core": 0.9027,
+      "balance": 0.9258,
+      "drop_is_core": 0.0219,
+      "drop_balance": -0.016
+    },
+    "加权度(deg_w)": {
+      "is_core": 0.9011,
+      "balance": 0.9262,
+      "drop_is_core": 0.0235,
+      "drop_balance": -0.0164
+    },
+    "对手方(counterparties)": {
+      "is_core": 0.8872,
+      "balance": 0.9344,
+      "drop_is_core": 0.0374,
+      "drop_balance": -0.0245
+    },
+    "pagerank": {
+      "is_core": 0.9299,
+      "balance": 0.9407,
+      "drop_is_core": -0.0053,
+      "drop_balance": -0.0309
+    },
+    "betweenness": {
+      "is_core": 0.9137,
+      "balance": 0.8648,
+      "drop_is_core": 0.011,
+      "drop_balance": 0.0451
+    }
+  }
+}
