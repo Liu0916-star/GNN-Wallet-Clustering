@@ -1,15 +1,52 @@
-# ---- 原始数据（约 700 MB，用 extract_data.sql 复现）----
-gnn-decentralization/data/*.csv
+# ============================================================================
+#  .gitignore
+#
+#  原则：论文 Data Availability 与附录 D 承诺归档的东西必须进仓库；
+#  能由脚本从原始数据重建、且体积大的东西不进。
+# ============================================================================
 
-# ---- 生成物 ----
+# ---- 原始数据（约 700 MB，用 gnn-decentralization/extract_data.sql 复现）----
+gnn-decentralization/data/*
+!gnn-decentralization/data/.gitkeep
+
+# ---- 结果：默认全部忽略，再逐类放行 -----------------------------------------
 gnn-decentralization/results/*
 !gnn-decentralization/results/.gitkeep
+
+# 论文 L1950：identified broker sets, cluster assignments → json / csv
+!gnn-decentralization/results/*.json
+!gnn-decentralization/results/*.csv
+
+# 论文 L1950 / L2203：the learned embeddings underlying every reported
+# ensemble, together with a fingerprint.  经纪人集成与 node2vec 对照
+# 都在 10^4 档上，这些是兑现承诺所必需的（约 36 MB）。
+!gnn-decentralization/results/emb_*_1w_s*.npy
+!gnn-decentralization/results/emb_*_1w_s*.fp
+!gnn-decentralization/results/emb_n2v_*_1w_s*.npy
+!gnn-decentralization/results/emb_n2v_*_1w_s*.fp
+
+# 论文 L1950：node features → 各档的图文件（含特征矩阵）
+!gnn-decentralization/results/graph_*_1w.npz
+!gnn-decentralization/results/graph_*_5w.npz
+!gnn-decentralization/results/emb_*_5w.npy
+!gnn-decentralization/results/emb_*_5w.fp
+
+# 论文 §5.5：边权修正前后的 PageRank 对照（图 9 的数据）
+!gnn-decentralization/results/edgeweight_compare_*.npz
+
+# 6.4x10^5 档的图与嵌入各约 60–80 MB，超出 GitHub 建议上限，归档到 Zenodo：
+#   graph_LINK_64w.npz, emb_LINK_64w.npy, emb_LINK_64w.fp
+# 它们也可由 01_build_graph.py / 02_c1.py 从原始数据重建。
+
+# ---- 生成的图：以 paper/figures/ 为准，这里的是工作副本 ----------------------
 gnn-decentralization/figures/*.pdf
+gnn-decentralization/figures/*.png
 
-# ---- 标签快照（3 MB，建议提交以保证可复现；如仓库有大小顾虑再忽略）----
-# gnn-decentralization/labels/*.json
+# ---- v16 冻结结果里的大二进制（特征矩阵，可重建）------------------------------
+gnn-decentralization/results_v16_legacy/*.npy
+gnn-decentralization/results_v16_legacy/nodesF.csv
 
-# ---- LaTeX 中间文件 ----
+# ---- LaTeX 中间文件 ----------------------------------------------------------
 paper/*.aux
 paper/*.bbl
 paper/*.blg
@@ -19,24 +56,14 @@ paper/*.synctex.gz
 paper/*.fdb_latexmk
 paper/*.fls
 paper/*.spl
-paper/*.pdf
-!paper/figures/*.pdf
+paper/main.pdf
 
-# ---- Python ----
+# ---- Python / 编辑器 / 系统 -------------------------------------------------
 __pycache__/
 *.pyc
 .venv/
 .ipynb_checkpoints/
-
-# ---- 系统 ----
-.DS_Store
-
-# ---- v16 冻结结果里的大文件（150 MB）----
-# 这些是特征矩阵与节点表，用 01_build_graph.py 可重新生成；
-# 仓库只保留 legacy 的 json/csv 汇总结果用于修正前后对比。
-gnn-decentralization/results_v16_legacy/*.npy
-gnn-decentralization/results_v16_legacy/nodesF.csv
-gnn-decentralization/results_v16_legacy/*.npy
-gnn-decentralization/results_v16_legacy/nodesF.csv
 .Rhistory
 .Rproj.user/
+.DS_Store
+*.bak.py

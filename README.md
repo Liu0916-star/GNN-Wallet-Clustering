@@ -1,134 +1,154 @@
-# GNN Decentralization
+# The Same Ledger, Different Verdicts
 
-Replication package for *Uncovering Hidden Intermediaries and Inequality
-Paradoxes in Decentralized Finance: A Comparative Graph Neural Analysis of
-Oracle and Governance Token Networks*.
+**How Measurement Specification Determines On-Chain Concentration**
 
-Two ERC-20 transfer networks — Chainlink (LINK) and Uniswap (UNI) — are
-analysed over an identical 90-day window (2026-03-26 to 2026-06-24) at three
-graph scales, with three contributions: a GNN-based measure of structural
-power (C1), dual-scale concentration over time (C2), and a role typology with
-hidden-broker discovery (C3).
+Jintao Liu and Zhimo Ji · School of Computing and Information Systems, The University of Melbourne
+
+[![arXiv](https://img.shields.io/badge/arXiv-2609.24176-b31b1b.svg)](https://arxiv.org/abs/2609.24176)
+
+---
+
+Whether a public blockchain is "decentralized" is routinely settled by citing a
+concentration statistic. This repository contains the data pipeline, results
+and manuscript for a paper showing that, on two ERC-20 ledgers observed over an
+identical 90-day window, that verdict is a property of the measurement rather
+than of the ledger.
+
+**Four discretionary choices move the balance HHI of a single ledger by a factor
+of 21** (UNI: 109 to 2,336), every specification defensible and none dictated
+by the data. Over the same range the Gini coefficient moves by less than 0.003.
+We also document a case in which one implementation detail — whether repeated
+transfers between an address pair are summed or overwritten — overturned a
+finding that had been written into an earlier draft of the paper.
+
+| | LINK (oracle) | UNI (governance) |
+|---|---|---|
+| Transfers / active addresses | 1,233,497 / 642,126 | 433,856 / 38,667 |
+| Balance Gini | 0.990 | 0.998 |
+| Balance HHI, across specifications | 115 – 562 | 109 – 2,336 |
+| Weekly flow HHI (address / entity-resolved) | 421 / 654 | 386 / 667 |
+| Hidden brokers (rank ensemble, 10 seeds) | 30 | 18 |
+| — shared across both ledgers | 12 | 12 |
+| — of which resolve to a named protocol | 6 | 6 |
+
+Observation window: 2026-03-26 to 2026-06-24 UTC. Concentration verdicts are
+reported against both the 2010 Horizontal Merger Guidelines and the 2023
+Merger Guidelines that replaced them.
+
+---
+
+## Repository layout
 
 ```
 .
-├── gnn-decentralization/     analysis pipeline (11 scripts + 2 modules)
-│   ├── config.py             single source of truth for paths and settings
-│   ├── common.py             loading, metrics, graph construction, labels
-│   ├── 00_data_check.py  …  10_fix_verification.py
-│   ├── data/                 ← put the four CSVs here (not in git)
-│   ├── labels/               ← put the label snapshot here
-│   ├── results/              generated
-│   ├── figures/              generated
-│   └── results_v16_legacy/   frozen pre-revision results, for comparison
-└── paper/
-    ├── main.tex              manuscript
-    ├── refs.bib              31 entries
-    └── figures/              12 PDFs referenced by main.tex
+├── paper/
+│   ├── main.tex                  manuscript (arXiv version)
+│   ├── refs.bib
+│   └── figures/                  the eight figures used in main.tex
+└── gnn-decentralization/
+    ├── config.py                 every path, threshold and hyperparameter
+    ├── common.py                 loading, metrics, graph construction, labels
+    ├── 00_data_check.py … 08_figures.py      main pipeline
+    ├── 09_verify_gap.py, 10_fix_verification.py   verification bookkeeping
+    ├── 11_random_control.py      matched control experiment
+    ├── 12_reverify_all.py        full re-verification of broker identities
+    ├── extract_data.sql          BigQuery extraction
+    ├── labels/                   archived Etherscan label snapshot
+    ├── verification/             manual on-chain verification records
+    ├── results/                  derived artefacts (see below)
+    └── results_v16_legacy/       results of the superseded construction
 ```
 
----
+## What is archived, and where
 
-## Quick start
+The manuscript commits to archiving several artefacts. This table maps each
+commitment to its location.
+
+| Manuscript commitment | Location |
+|---|---|
+| Label snapshot, retrieved 26 Aug 2026, MD5 `16792aac5afd` | `labels/etherscan_labels_2026-08-26.json` |
+| Embeddings underlying every reported ensemble, with fingerprints | `results/emb_*_1w_s*.npy` and `.fp` |
+| Node features | `results/graph_*_1w.npz`, `graph_*_5w.npz` |
+| Identified broker sets and cluster assignments | `results/hidden_brokers_*.csv`, `c3_typology_*.json` |
+| Full per-address verification record | `verification/broker_identities.csv`, `reverify_worklist.csv` |
+| Matched control experiment (blind list, key, result) | `verification/control_*.csv`, `results/random_control.json` |
+| Phishing airdrop: 38 contracts, 13 funders, Etherscan classification | `verification/eventstudy_w7_phishing_addrs.json` |
+| Edge-weight correction, before and after | `results/edgeweight_compare_*.npz`, `results_v16_legacy/` |
+| 6.4 × 10⁵-node graph and embedding (≈140 MB) | Zenodo: DOI to be added |
+
+Raw transfer and balance data (≈700 MB) are not tracked. `extract_data.sql`
+reproduces them exactly from `bigquery-public-data.crypto_ethereum.token_transfers`,
+and `00_data_check.py` verifies the row counts against the figures above.
+
+## Reproducing the results
 
 ```bash
 cd gnn-decentralization
+pip install -r ../requirements.txt
 
-# 1. Data (about 700 MB, not tracked in git — extract with extract_data.sql)
-cp /path/to/{link,uni}_{90d_transfers,balances}.csv data/
-
-# 2. Label snapshot, fetched once and then read locally forever
-curl -L -o labels/etherscan_labels_2026-08-26.json \
-  https://raw.githubusercontent.com/brianleect/etherscan-labels/main/data/etherscan/combined/combinedAllLabels.json
-
-# 3. Optional: manually verified broker identities
-mkdir -p verification && cp /path/to/broker_identities.csv verification/
-
-# 4. Run
-python 00_data_check.py        # gate: resolve any [X] before continuing
-python 01_build_graph.py       # LINK + UNI at 1w; pass args for 5w / 64w
-python 02_c1.py                # C1: three evidence lines, multi-seed, ablation
-python 03_c2_weekly.py         # C2: weekly concentration series
-python 04_c2_procrustes.py     # C2: window-wise retraining + alignment
-python 05_c3_roles.py          # C3: role typology + hidden brokers
-python 06_concentration.py     # concentration grid + entity resolution
-python 07_governance.py        # rule layer (UNI only)
-python 08_figures.py           # all figures, reads results/ only
+# place the four CSVs from extract_data.sql in data/, then:
+python 00_data_check.py          # gate: resolve any [X] before continuing
+python 01_build_graph.py         # LINK and UNI at 10^4; pass args for 5w / 64w
+python 02_c1.py                  # instrument evaluation, multi-seed
+python 03_c2_weekly.py           # weekly concentration series
+python 04_c2_procrustes.py       # window-wise retraining and alignment
+python 05_c3_roles.py            # role typology and hidden brokers
+python 06_concentration.py       # specification grid and entity resolution
+python 07_governance.py          # rule layer (UNI only)
+python 08_figures.py             # every figure, from results/ only
 ```
 
-`01`, `02` and `05` accept `TOKEN` and `SCALE` arguments, e.g.
-`python 01_build_graph.py LINK 64w`. `05` accepts `--fresh` to ignore all
-embedding caches.
+To reproduce the figures and tables without retraining, the archived
+`results/` is sufficient: `05_c3_roles.py` reuses cached embeddings whose
+fingerprint matches the current graph, and `08_figures.py` reads only
+`results/`.
 
-Two auxiliary scripts support the manual verification loop:
-`09_verify_gap.py` lists broker addresses not yet in the verification table
-and diagnoses why previously verified addresses dropped out;
-`10_fix_verification.py` recomputes the token-attribution column of that
-table and emits a fill-in template.
+## Four things that determine whether the numbers reproduce
 
-Every reported number is appended to `results/manifest.csv` with its script,
-token, metric name and timestamp.
+**Edge weights must be summed.** Standard graph libraries overwrite a repeated
+edge's attribute rather than accumulating it, without raising an error. Repeat
+interaction accounts for over 90% of records in the core subgraphs, so the
+overwrite construction discards roughly 85% of transferred volume.
+`common.build_graph()` is the single entry point and sums explicitly. This is
+the detail that overturned the earlier draft's finding (manuscript §5.5).
 
----
+**Labels must come from the archived snapshot.** The upstream compilation is
+updated continuously and silently. `common.load_labels()` refuses to query it
+live.
 
-## Three rules the code enforces
+**GNN training on GPU is not bit-reproducible.** Scatter operations have no
+fixed reduction order, so seeding alone does not fix the result. Every GNN
+figure is a mean over independent initialisations, and the broker set is a
+rank ensemble over ten. Embedding caches carry a fingerprint of the feature
+matrix and edge list; a mismatch triggers retraining rather than silent reuse.
 
-**Graph construction has exactly one entry point.** `common.build_graph()`
-sums edge weights over repeated transfers before constructing the graph. A
-simple directed graph overwrites rather than accumulates a repeated edge's
-attribute, and repeat interaction accounts for 90.9% (LINK) and 91.7% (UNI)
-of records in the core subgraphs, so an unaggregated construction discards
-roughly 85% of transferred volume. Weighted degree and PageRank computed the
-two ways correlate at only 0.80–0.83.
+**Manual verification must use the token-transfer view.** A routing contract's
+Etherscan transaction count records only calls made to it directly — the most
+central shared broker shows six transactions against several thousand token
+transfers. Etherscan also caps the displayed transfer count at 10,000, which the
+verification records note as a lower bound where it binds.
 
-**Columns are matched by name, never by position.** `common.find_col()`
-raises with the actual column list rather than falling back to `iloc`. The
-two balance files have different column counts, and positional indexing
-silently returns `total_received` instead of `balance` on one of them.
+## A negative result we report
 
-**Labels are read from an archived snapshot, never from the network.**
-`common.load_labels()` fails if the local file is missing. The upstream
-compilation is updated continuously — 29,945 entries on 5 August 2026,
-29,772 on 9 August — and the `is_core` anchor set derives from it, so a live
-query makes supervised results non-reproducible without any error.
+A degree-matched control drawn from the same eligibility pool as the hidden
+brokers resolves to named routing protocols at 35%, against 37% for the brokers
+(Fisher one-sided *p* = 0.57). The discriminative work is done by the criterion
+— in particular by counterparty count — and not by the graph neural network used
+to operationalise "structurally central". `11_random_control.py` implements the
+design, including blinding and a calibration check on the verifier.
 
----
+## Citation
 
-## Reproducibility
+```bibtex
+@article{liu2026sameledger,
+  title   = {The Same Ledger, Different Verdicts: How Measurement Specification
+             Determines On-Chain Concentration},
+  author  = {Liu, Jintao and Ji, Zhimo},
+  journal = {arXiv preprint arXiv:2609.24176},
+  year    = {2026}
+}
+```
 
-Embeddings are trained on GPU, where the scatter operations underlying
-neighbourhood aggregation have no fixed reduction order; seeding does not
-make them bit-reproducible. All GNN results are therefore reported as means
-over independent initialisations, and broker sets as rank ensembles over ten
-of them. Embedding caches carry a fingerprint of the feature matrix and edge
-list they were derived from; if `01_build_graph.py` is re-run with different
-settings, downstream scripts detect the mismatch and retrain rather than
-silently reusing a stale embedding.
+## Licence
 
-Archive `results/emb_*_s*.npy` together with their `.fp` files alongside any
-release, so that the reported figures can be recomputed exactly.
-
----
-
-## Paper
-
-`paper/main.tex` compiles with pdfLaTeX against `refs.bib` and the twelve
-PDFs in `paper/figures/`. The figures are generated by `08_figures.py` and
-should be copied over after any re-run.
-
-The class line is currently `[final,5p,times]` (two-column, for arXiv). For
-journal submission switch to `[review,12pt]`, comment out
-`\emergencystretch` and `\tolerance`, and uncomment `\linenumbers`. The
-single-column layout also removes the two-column float-placement constraints
-that require the `dblfloatfix` settings in the preamble.
-
----
-
-## Data availability
-
-Transfer and balance data are extracted from
-`bigquery-public-data.crypto_ethereum.token_transfers` using the queries in
-`extract_data.sql`. The raw CSVs total roughly 700 MB and are not tracked
-here; the queries reproduce them exactly, and the row counts are checked by
-`00_data_check.py` against the values reported in the paper (1,233,497 LINK
-transfers and 433,856 UNI transfers).
+Code: MIT (see `LICENSE`). Manuscript: CC BY-NC-ND 4.0, as deposited on arXiv.

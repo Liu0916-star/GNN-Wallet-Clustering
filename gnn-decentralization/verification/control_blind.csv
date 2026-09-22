@@ -1,0 +1,39 @@
+address,counterparties,verified_identity,evidence
+0x4b47d7291664beb43e03588e2698e10ba2cd21b3,17,Unlabelled routing contract,行为推断（无Name Tag、无验证源码，ERC-20转账超1万笔，经Uniswap V4/V3与Sky PSM等多DEX路由swap）
+0xc14a9ef7fcce6bbef3542af92093dfcd95b2cd6e,12,Unknown,"行为推断（无Name Tag，EOA非合约，1,206笔ERC-20转账，通过Relay Router等进行普通代币swap/转账，无明确协议归属或套利特征）"
+0xbc1d9760bd6ca468ca9fb5ff2cfbeac35d86c973,48,Bitget: DEX Aggregator,"标签（Etherscan Name Tag ""Bitget: DEX Aggregator"" + #Bitget标签 + Exchange标签，基于GitHub仓库标记）"
+0x545bf25f9a11668665653511f69f0c57202d1ae1,13,Unknown,行为推断（无Name Tag，EOA非合约，282笔ERC-20转账，通过Aave进行闪电贷/债务互换等DeFi操作，无明确协议归属或高频套利特征）
+0x4c3ccc98c01103be72bcfd29e1d2454c98d1a6e3,230,Unlabelled routing contract,行为推断（无Name Tag、无验证源码，ERC-20转账超1万笔，方法含Execute/Withdraw，与DEX/MEV多对手方交互）
+0x3d90f66b534dd8482b181e24655a9e8265316be9,57,Unlabelled routing contract,行为推断（无Name Tag，代理合约源码已验证但部署者无明确协议归属，46万+交易，ERC-20转账超1万笔，与Uniswap V2多代币池高频swap）
+0x1cfc12c31601c6d0a246b39a3f0fd7b4b1a1b109,13,Unknown,"标签（Etherscan Name Tag ""Fake_Phishing3125062"" + Phish/Hack标签 + HashDit钓鱼警告，合约用于Sweep Tokens扫荡被盗资产）"
+0x818acad67efa6a1b3936bd682b5a6bc9dcd864f8,7,MEV Bot,行为推断（无Name Tag、无验证源码，部署者带Etherscan MEV Builder标签，执行WETH/SWELL/cvxCRV链式套利swap）
+0x9f7e7d375f7d39036f5e17ed38014d57f41bbfb6,48,Unknown,"行为推断（无Name Tag、无验证源码，10笔Airdrop交易触发5,002笔ERC-20转账，批量分发ChainLink代币，为空投合约而非路由/MEV）"
+0xf8b49a1701aad0adab6f104a6f992282444f1d26,5,Unknown,行为推断（无Name Tag，EOA非合约，由Fake_Phishing地址资助，72笔ERC-20转账，普通代币Transfer操作，无路由/套利特征）
+0x420cafeaa7a2e44a404340397ac45b2f55fc8f73,42,MEV Bot,"行为推断（无Name Tag、无验证源码，25,129笔交易全部由单一调用者通过未知hex选择器触发，高频套利特征）"
+0x7b74afcad6b239dffb45a525a262437d97d90b47,7,Unknown,行为推断（无Name Tag，EOA非合约带Authority委托，131笔ERC-20转账，普通代币Transfer及DeFi操作，无路由/高频套利特征）
+0xf18d5a4d447ad91d7f40e4edcfb6b5505ca125cc,56,Unknown,"行为推断（无Name Tag、无验证源码，10笔Airdrop交易触发5,002笔ERC-20转账，批量分发ChainLink代币，为空投合约而非路由/MEV）"
+0xd78d199f8c402e7b5cc2abe278df0412400a3bae,70,Mayan: Swift v2 Destination,"标签/源码（Etherscan Name Tag ""Mayan: Swift v2 Destination"" + 已验证源码 + #Mayan标签）"
+0x148b3ac92f87689d3c432f9c6804857ce8696224,8,Unknown,行为推断（无Name Tag，EOA非合约，60笔ERC-20转账，在Coinbase与另一地址间中转ChainLink代币，无路由/套利特征）
+0x017272088ba6d435ec780c1066a397afb001f4ea,7,Unlabelled routing contract,"行为推断（无Name Tag、无验证源码，7,029笔交易，ERC-20转账超1万笔，方法Unlock与Uniswap V2/V3/Curve等多DEX路由swap）"
+0x399740157391a9f1bf4e9921a8834f9bc8f2678e,70,Unlabelled routing contract,行为推断（无Name Tag，源码已验证但部署者deploy-hub.eth无明确协议归属，ERC-20转账超1万笔）
+0xbb1532f8209cb561a2fa064616c29448ed18ea4c,23,Mayan: Fulfill Helper 2,"标签/源码（Etherscan Name Tag ""Mayan: Fulfill Helper 2"" + 已验证源码 + #Mayan标签）"
+0x5e1f62dac767b0491e3ce72469c217365d5b48cc,86,OKX Labs: Old DEX Router 8,"标签/源码（Etherscan Name Tag ""OKX Labs: Old DEX Router 8"" + 已验证源码 + #OKX Labs/#DEX/#Router标签）"
+0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f,181,Relay: Router V3,"标签/源码（Etherscan Name Tag ""Relay: Router V3"" + 已验证源码 + #Relay标签）"
+0x7f54f05635d15cde17a49502fedb9d1803a3be8a,313,0x Protocol Router,标签/源码（已验证源码，部署者为deployer.zeroexprotocol.eth，可追溯至0x Protocol）
+0x163f3103de041d25464e2c8a4f8f3187ec1856e0,50,Unlabelled routing contract,行为推断（无Name Tag，源码已验证但部署者无明确协议归属，方法含Withdraw/Dag Swap To，与Uniswap V4等DEX交互）
+0x5063e2474f6846d31480e1f4b7697ab98522d242,8,Unknown,"行为推断（无Name Tag，EOA非合约，1,341笔ERC-20转账，在stake.link等平台进行质押/赎回操作，无路由/套利特征）"
+0x08baf37cfeaff1e8e2a8695ed9b7dc3cf96beb9d,29,Unlabelled routing contract,行为推断（无Name Tag，源码已验证但部署者无明确协议归属，ERC-20转账超1万笔，与MEV Bot/Disperse等多对手方交互）
+0x78cd4d99634b81eaaf46b0ab2d2a19b7fb192665,101,Unknown,"行为推断（无Name Tag、无验证源码，10笔Airdrop交易触发4,001笔ERC-20转账，批量分发ChainLink代币，为空投合约而非路由/MEV）"
+0x8f10b468b06c6fd214b65f87778827f7d113f996,132,Unlabelled routing contract,行为推断（无Name Tag、无验证源码，ERC-20转账超1万笔，高频Swap与Uniswap V3等DEX交互）
+0xfc7a91712b1280f42b59cf3108018315ad221fe9,26,Unlabelled routing contract,"行为推断（无Name Tag、无验证源码，4,419笔交易，ERC-20转账超1万笔，方法0x87e05e5a与SushiSwap/Uniswap V4/V3等多DEX路由swap）"
+0x9ba0cf1588e1dfa905ec948f7fe5104dd40eda31,33,TrustedVolumes: Resolver,"标签（Etherscan Name Tag ""TrustedVolumes: Resolver""，Blockaid标记有漏洞）"
+0xe98e350bc3c353a98a5e1ef8da7486f9174696dd,42,Unlabelled routing contract,行为推断（无Name Tag、无验证源码，ERC-20转账超1万笔，方法Strictly Swap与Bitget DEX Aggregator等交互路由swap）
+0x3b435ffd6173d90d807dfe1e7cd8fc9607e9d5b9,5,Unknown,行为推断（无Name Tag，EOA非合约，66笔ERC-20转账，普通代币Transfer操作，无路由/套利特征）
+0x74de5d4fcbf63e00296fd95d33236b9794016631,277,MetaMask: Swaps Spender,"标签/源码（Etherscan Name Tag ""MetaMask: Swaps Spender"" + 已验证源码(Proxy) + #MetaMask标签）"
+0xc785055673615ac1b8ff5f2eea7c43d091c505e6,167,Unknown,"行为推断（无Name Tag、无验证源码，10笔Airdrop交易触发4,001笔ERC-20转账，批量分发ChainLink代币，为空投合约而非路由/MEV）"
+0x66a9893cc07d91d95644aedd05d03f95e1dba8af,105,Uniswap V4: Universal Router,"标签/源码（Etherscan Name Tag ""Uniswap V4: Universal Router"" + 已验证源码 + 部署者为Uniswap V4: Deployer + #Uniswap/#DEX/#Router标签）"
+0xf48a3f7c0575c85cf4529aa220caf3c055773f1c,127,0x Protocol: MainnetSettler,标签/源码（已验证源码Exact Match，合约名MainnetSettler，部署者为deployer.zeroexprotocol.eth，可追溯至0x Protocol，无公开Name Tag）
+0x79dd3d08d0af8a8699ea01ef363482576038decb,22,Unknown,行为推断（无Name Tag，EOA非合约，Authority委托给Fake_Phishing地址，183笔ERC-20转账，普通ChainLink代币Transfer操作）
+0x00c600b30fb0400701010f4b080409018b9006e0,44,Velora: Executor,"标签（Etherscan Name Tag ""Velora: Executor""，部署者为Velora: Deployer 1）"
+0x1fe35d32f2f649f25e2de25ce0b18f25a964b5e8,290,Unknown,"行为推断（无Name Tag、无验证源码，10笔Airdrop交易触发4,001笔ERC-20转账，批量分发ChainLink代币，为空投合约而非路由/MEV）"
+0x5b4a24501dcc7cf8cff580dbce4a2a50b7865ff1,28,MEV Bot,"行为推断（无Name Tag，EOA非合约，2,255笔交易高频执行Multicall/Execute，与Aave/Uniswap V4/V3等跨协议swap套利）"

@@ -246,5 +246,11 @@ LORENZ_BENCHMARKS = [
     ("Fintech corporate equity", 0.95, "#7B6D8D"),
 ]
 
+# DOJ/FTC 阈值。2023-12-18 的 Merger Guidelines 取代 2010 横向指南，
+# 将结构性推定门槛从 2,500 降到 1,800（恢复 1982–2010 的口径）。
+# 两套都保留：正文同时报告，图上画两组线。
+DOJ2023_MODERATE = 1_000
+DOJ2023_HIGH = 1_800
+
 DOJ_UNCONCENTRATED = 1_500
 DOJ_HIGHLY_CONCENTRATED = 2_500

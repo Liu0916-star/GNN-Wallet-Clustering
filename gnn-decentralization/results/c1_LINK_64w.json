@@ -1,0 +1,73 @@
+{
+  "token": "LINK",
+  "scale": "64w",
+  "n_nodes": 641276,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "n_anchors": 161,
+  "gnn_input": [
+    "in_deg",
+    "out_deg",
+    "in_deg_w",
+    "out_deg_w",
+    "counterparties",
+    "pagerank",
+    "betweenness"
+  ],
+  "cv": "StratifiedKFold(5,shuffle=True,seed=42)",
+  "preprocessing": "drop balance from raw, THEN log1p+zscore on 7",
+  "is_core_centrality": {
+    "auc": 0.6558,
+    "sd_fold": 0.0448
+  },
+  "is_core_raw_struct": {
+    "auc": 0.7586,
+    "sd_fold": 0.033
+  },
+  "balance_top5pct_centrality": {
+    "auc": 0.8451,
+    "sd_fold": 0.0012
+  },
+  "balance_top5pct_raw_struct": {
+    "auc": 0.883,
+    "sd_fold": 0.0027
+  },
+  "gnn_is_core": {
+    "mean": 0.7569,
+    "sd_seed": 0.0264,
+    "min": 0.7275,
+    "max": 0.7786
+  },
+  "gnn_balance": {
+    "mean": 0.9279,
+    "sd_seed": 0.0126,
+    "min": 0.9158,
+    "max": 0.941
+  },
+  "gnn_nofeat_is_core": {
+    "mean": 0.4379,
+    "sd_seed": 0.0443,
+    "min": 0.397,
+    "max": 0.485
+  },
+  "purity": {
+    "mean": 0.1282,
+    "sd_seed": 0.005,
+    "min": 0.123,
+    "max": 0.1329
+  },
+  "enrichment": {
+    "mean": 510.4611,
+    "sd_seed": 19.8432,
+    "min": 489.8447,
+    "max": 529.4281
+  },
+  "enrichment_centrality": 12.4,
+  "enrichment_raw_struct": 205.3,
+  "purity_centrality": 0.0031,
+  "purity_raw_struct": 0.0516,
+  "random_baseline_purity": 0.00025
+}

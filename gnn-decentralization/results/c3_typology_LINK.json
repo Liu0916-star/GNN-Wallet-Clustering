@@ -1,0 +1,222 @@
+{
+  "token": "LINK",
+  "scale": "1w",
+  "n_nodes": 9876,
+  "n_clusters": 8,
+  "typology": {
+    "cluster_0": {
+      "size": 2127,
+      "core_rate": 0.0009,
+      "core_n": 2,
+      "med_balance": 0.0,
+      "med_counterparties": 3.0,
+      "med_betweenness": 2.7667314670317396e-06,
+      "med_deg": 3.0,
+      "flags": [],
+      "top_labels": {
+        "Bridge": 1,
+        "DEX": 1,
+        "Other-labeled": 1
+      }
+    },
+    "cluster_1": {
+      "size": 1342,
+      "core_rate": 0.0037,
+      "core_n": 5,
+      "med_balance": 500.0,
+      "med_counterparties": 2.0,
+      "med_betweenness": 0.0,
+      "med_deg": 2.0,
+      "flags": [],
+      "top_labels": {
+        "Bridge": 1,
+        "CEX": 1,
+        "DEX": 1,
+        "DeFi": 2,
+        "Other-labeled": 8
+      }
+    },
+    "cluster_2": {
+      "size": 2090,
+      "core_rate": 0.0005,
+      "core_n": 1,
+      "med_balance": 0.0,
+      "med_counterparties": 3.0,
+      "med_betweenness": 1.1517814982374838e-05,
+      "med_deg": 3.0,
+      "flags": [],
+      "top_labels": {
+        "CEX": 1,
+        "Other-labeled": 6
+      }
+    },
+    "cluster_3": {
+      "size": 810,
+      "core_rate": 0.0,
+      "core_n": 0,
+      "med_balance": 0.0,
+      "med_counterparties": 3.0,
+      "med_betweenness": 6.417717834842924e-05,
+      "med_deg": 3.0,
+      "flags": [],
+      "top_labels": {
+        "Other-labeled": 2
+      }
+    },
+    "cluster_4": {
+      "size": 1232,
+      "core_rate": 0.0,
+      "core_n": 0,
+      "med_balance": 0.0,
+      "med_counterparties": 3.0,
+      "med_betweenness": 0.0,
+      "med_deg": 3.0,
+      "flags": [],
+      "top_labels": {
+        "Other-labeled": 1
+      }
+    },
+    "cluster_5": {
+      "size": 1492,
+      "core_rate": 0.0328,
+      "core_n": 49,
+      "med_balance": 0.0,
+      "med_counterparties": 7.0,
+      "med_betweenness": 1.059486270134701e-05,
+      "med_deg": 8.0,
+      "flags": [],
+      "top_labels": {
+        "Bridge": 3,
+        "DEX": 45,
+        "DeFi": 1,
+        "Other-labeled": 2
+      }
+    },
+    "cluster_6": {
+      "size": 169,
+      "core_rate": 0.1006,
+      "core_n": 17,
+      "med_balance": 3934.45,
+      "med_counterparties": 80.0,
+      "med_betweenness": 0.0024967016295461145,
+      "med_deg": 95.0,
+      "flags": [
+        "core_infrastructure",
+        "whale_hoarding"
+      ],
+      "top_labels": {
+        "Bridge": 2,
+        "CEX": 7,
+        "DEX": 7,
+        "DeFi": 1,
+        "Other-labeled": 4
+      }
+    },
+    "cluster_7": {
+      "size": 614,
+      "core_rate": 0.0,
+      "core_n": 0,
+      "med_balance": 0.0,
+      "med_counterparties": 4.0,
+      "med_betweenness": 2.041813518911027e-05,
+      "med_deg": 4.0,
+      "flags": [],
+      "top_labels": {
+        "Other-labeled": 2
+      }
+    }
+  },
+  "wealth_power": {
+    "spearman_cluster_core_vs_balance": 0.1964,
+    "spearman_node_balance_vs_counterparties": 0.046,
+    "spearman_node_balance_vs_betweenness": -0.0649,
+    "spearman_nonzero_balance_vs_counterparties": 0.0809,
+    "spearman_nonzero_balance_vs_betweenness": -0.0275,
+    "zero_balance_frac": 0.3955,
+    "n_nonzero": 5970,
+    "top_core_cluster": 6,
+    "top_balance_cluster": 6,
+    "verdict": "fused"
+  },
+  "hidden_brokers": {
+    "consensus_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "consensus_min_frac": 0.5,
+    "per_seed_mean": 26.4,
+    "consensus_set": 30,
+    "high_confidence_set": 2,
+    "unanimous_set": 1,
+    "freq_histogram": {
+      "1/10": 31,
+      "2/10": 17,
+      "3/10": 11,
+      "4/10": 5,
+      "5/10": 7,
+      "6/10": 7,
+      "7/10": 6,
+      "8/10": 1,
+      "9/10": 1,
+      "10/10": 1
+    },
+    "gnn_def_v16": 30,
+    "gnn_def_filtered": 30,
+    "n_degenerate_dropped": 0,
+    "betweenness_def_topk": 30,
+    "overlap_size_matched": 7,
+    "ensemble": "rank",
+    "rank_ensemble_set": 30,
+    "vote_consensus_set": 23,
+    "rank_vote_overlap": 22,
+    "churn_1_2_seeds": 48,
+    "definition": "[rank ensemble over 10 seeds] top1% & balance<=median & unlabeled & counterparties>=5 & betweenness>0",
+    "caveat": "core_score 为样本内拟合，仅作描述性筛选，不主张预测效力（预测证据见 C1 的 AUC）"
+  },
+  "node2vec_contrast": {
+    "verification_by_layer": {
+      "GNN 排名集成（主）": {
+        "in_table": 30,
+        "specific_identity": 11,
+        "n": 30,
+        "specific_share": 0.367
+      },
+      "GNN 投票 ≥50%": {
+        "in_table": 23,
+        "specific_identity": 11,
+        "n": 23,
+        "specific_share": 0.478
+      },
+      "GNN 两者交集（最保守）": {
+        "in_table": 22,
+        "specific_identity": 10,
+        "n": 22,
+        "specific_share": 0.455
+      },
+      "node2vec 排名集成": {
+        "in_table": 5,
+        "specific_identity": 0,
+        "n": 14,
+        "specific_share": 0.0
+      }
+    },
+    "n_verified_total": 42,
+    "n_specific_identity": 16,
+    "n_gnn": 30,
+    "n_node2vec": 14,
+    "overlap": 4,
+    "jaccard": 0.1,
+    "top1_labeled_frac_gnn": 0.1616,
+    "top1_labeled_frac_node2vec": 0.3434,
+    "top1_core_frac_gnn": 0.1616,
+    "top1_core_frac_node2vec": 0.3333
+  }
+}

@@ -58,6 +58,9 @@ def reuse_betweenness(token, scale, nodes):
     return np.array([m[a] for a in nodes])
 
 
+TOKEN_CTX = ("LINK", "1w")   # 由 run() 设置，供落盘命名
+
+
 def legacy_compare(tx, G, nodes, pr_new, verbose=True):
     """用 v16 的错误建图方式重算一遍，量化差异。拓扑相同，只有边权不同。"""
     import networkx as nx
@@ -77,6 +80,12 @@ def legacy_compare(tx, G, nodes, pr_new, verbose=True):
     t50b = set(np.array(nodes)[np.argsort(-b)[:50]])
     ov = len(t50a & t50b)
     loss = (1 - v_old / v_new) * 100 if v_new else 0.0
+    # ★ 落盘两组 PageRank，供 08_figures 画新旧对照散点。
+    #   只存向量与节点序，不存图，文件很小。
+    np.savez_compressed(
+        C.RESULTS / f"edgeweight_compare_{TOKEN_CTX[0]}_{TOKEN_CTX[1]}.npz",
+        pr_new=a, pr_old=b, nodes=np.array(nodes, dtype=object),
+        value_new=np.array([v_new]), value_old=np.array([v_old]))
     if verbose:
         print(f"\n  [新旧边权对比]")
         print(f"    图内总流量 旧 {v_old:,.0f} → 新 {v_new:,.0f}"
@@ -88,6 +97,8 @@ def legacy_compare(tx, G, nodes, pr_new, verbose=True):
 
 
 def run(token: str, scale: str):
+    global TOKEN_CTX
+    TOKEN_CTX = (token, scale)
     cm.banner(f"01 · 建图 {token} / {scale}")
     top_n = C.SCALES[scale]
 

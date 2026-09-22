@@ -1,0 +1,71 @@
+{
+  "n_total": 42,
+  "n_filled": 42,
+  "n_transfer_count_truncated": 38,
+  "transfer_count_note": "Etherscan caps the displayed ERC-20 transfer count at 10,000; entries recorded as >10000 are censored from above",
+  "n_changed": 12,
+  "unnamed_to_named": 2,
+  "named_to_unnamed": 0,
+  "changed": [
+    {
+      "address": "0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f",
+      "old": "Unlabelled routing contract",
+      "new": "Relay: Router V3"
+    },
+    {
+      "address": "0x7f51c134230eb9e5aba42bc364d3d3eba26d9712",
+      "old": "Unlabelled contract",
+      "new": "Unlabelled routing contract"
+    },
+    {
+      "address": "0xce937da1ffd21673aa1e063459873f30189a2193",
+      "old": "Unlabelled contract",
+      "new": "Unlabelled routing contract"
+    },
+    {
+      "address": "0xa8195d26a8db123de6eeb9accb3cfd940f31bcdd",
+      "old": "Fake_Phishing (flagged)",
+      "new": "Unknown"
+    },
+    {
+      "address": "0x08baf37cfeaff1e8e2a8695ed9b7dc3cf96beb9d",
+      "old": "Unlabelled contract",
+      "new": "Unlabelled routing contract"
+    },
+    {
+      "address": "0x7f54f05635d15cde17a49502fedb9d1803a3be8a",
+      "old": "Suspected 0x Protocol router",
+      "new": "0x Protocol Router"
+    },
+    {
+      "address": "0x09ad820aac5779683b481c4674208a4e1b024afa",
+      "old": "Unlabelled DEX aggregator",
+      "new": "Unlabelled routing contract"
+    },
+    {
+      "address": "0x75cf59a923a2649b84fa569bb97ea9694b6f26e4",
+      "old": "Unlabelled contract",
+      "new": "Unlabelled routing contract"
+    },
+    {
+      "address": "0xb9e9e795fd530314663f779f7f57950c6bc1eb4b",
+      "old": "Compromised contract",
+      "new": "Unlabelled routing contract"
+    },
+    {
+      "address": "0x225a38bc71102999dd13478bfabd7c4d53f2dc17",
+      "old": "Uniswap X: Rizzolver (solver)",
+      "new": "Rizzolver: Uniswap X"
+    },
+    {
+      "address": "0x28b1dc1a5e3699a428bc51d234dfab7c9cb2a183",
+      "old": "OKX: DEX Router 6",
+      "new": "OKX Labs: DEX Router 2"
+    },
+    {
+      "address": "0x63242a4ea82847b20e506b63b0e2e2eff0cc6cb0",
+      "old": "KyberSwap: Aggregator Executor",
+      "new": "KyberSwap: Aggregator Executor V3"
+    }
+  ]
+}

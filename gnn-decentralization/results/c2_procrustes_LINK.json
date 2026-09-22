@@ -1,0 +1,162 @@
+{
+  "token": "LINK",
+  "n_windows": 12,
+  "skipped_outlier_windows": [
+    7
+  ],
+  "anomaly_windows": [
+    6
+  ],
+  "ref_window": 1,
+  "alignment_diag": [
+    {
+      "window": 2,
+      "anchors": 3427,
+      "resid_before": 92.3,
+      "resid_after": 85.09,
+      "improved": true
+    },
+    {
+      "window": 3,
+      "anchors": 3002,
+      "resid_before": 99.64,
+      "resid_after": 81.65,
+      "improved": true
+    },
+    {
+      "window": 4,
+      "anchors": 2592,
+      "resid_before": 86.49,
+      "resid_after": 75.87,
+      "improved": true
+    },
+    {
+      "window": 5,
+      "anchors": 2345,
+      "resid_before": 77.68,
+      "resid_after": 71.43,
+      "improved": true
+    },
+    {
+      "window": 6,
+      "anchors": 2486,
+      "resid_before": 82.76,
+      "resid_after": 73.3,
+      "improved": true
+    },
+    {
+      "window": 8,
+      "anchors": 2273,
+      "resid_before": 74.45,
+      "resid_after": 68.44,
+      "improved": true
+    },
+    {
+      "window": 9,
+      "anchors": 2230,
+      "resid_before": 74.9,
+      "resid_after": 67.84,
+      "improved": true
+    },
+    {
+      "window": 10,
+      "anchors": 2454,
+      "resid_before": 80.32,
+      "resid_after": 76.11,
+      "improved": true
+    },
+    {
+      "window": 11,
+      "anchors": 2508,
+      "resid_before": 80.78,
+      "resid_after": 77.14,
+      "improved": true
+    },
+    {
+      "window": 12,
+      "anchors": 2069,
+      "resid_before": 74.95,
+      "resid_after": 68.64,
+      "improved": true
+    },
+    {
+      "window": 13,
+      "anchors": 2027,
+      "resid_before": 89.61,
+      "resid_after": 74.25,
+      "improved": true
+    }
+  ],
+  "alignment_ok": "11/11",
+  "min_anchors": 2027,
+  "n_persistent_elite": 157,
+  "elite_drift": [
+    {
+      "from": 1,
+      "to": 2,
+      "drift": 1.2716,
+      "is_outlier": false
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "drift": 1.4411,
+      "is_outlier": false
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "drift": 1.4691,
+      "is_outlier": false
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "drift": 1.1974,
+      "is_outlier": false
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "drift": 1.1771,
+      "is_outlier": false
+    },
+    {
+      "from": 6,
+      "to": 8,
+      "drift": 1.3131,
+      "is_outlier": false
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "drift": 1.2607,
+      "is_outlier": false
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "drift": 1.3473,
+      "is_outlier": false
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "drift": 1.341,
+      "is_outlier": false
+    },
+    {
+      "from": 11,
+      "to": 12,
+      "drift": 1.3883,
+      "is_outlier": false
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "drift": 1.8619,
+      "is_outlier": false
+    }
+  ],
+  "normal_drift_mean": 1.3699
+}

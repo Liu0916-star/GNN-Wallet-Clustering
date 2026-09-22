@@ -1,0 +1,33 @@
+{
+  "control_seed": 20260827,
+  "n_matched": 20,
+  "n_uniform": 10,
+  "n_broker_anchor": 8,
+  "tokens": [
+    "LINK"
+  ],
+  "design": "counterparty-matched control from the same eligibility pool; blind manual verification",
+  "results": {
+    "LINK": {
+      "broker_all": [
+        11,
+        30
+      ],
+      "broker_anchor_blind": [
+        4,
+        8
+      ],
+      "matched": [
+        7,
+        20
+      ],
+      "uniform": [
+        0,
+        10
+      ],
+      "odds_ratio": 1.075,
+      "p_value": 0.5736,
+      "verdict": "未达显著：在度数相同的地址中，GNN 的筛选没有可检出的增量"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "token": "UNI",
+  "applicable": true,
+  "proposal_threshold": 2500000,
+  "quorum": 40000000,
+  "All holders": {
+    "n": 386029,
+    "nakamoto_quorum": 1,
+    "nakamoto_quorum_reachable": true,
+    "n_eligible_each_above_threshold": 55,
+    "eligible_share": 0.7377
+  },
+  "Excl. non-voting": {
+    "n": 386026,
+    "nakamoto_quorum": 2,
+    "nakamoto_quorum_reachable": true,
+    "n_eligible_each_above_threshold": 52,
+    "eligible_share": 0.3504
+  },
+  "Excl. custodial": {
+    "n": 386001,
+    "nakamoto_quorum": 2,
+    "nakamoto_quorum_reachable": true,
+    "n_eligible_each_above_threshold": 47,
+    "eligible_share": 0.2909
+  },
+  "stratification": {
+    "top10_outflow": {
+      "overlap": 2,
+      "share": 0.3788
+    },
+    "top25_outflow": {
+      "overlap": 4,
+      "share": 0.5466
+    },
+    "top50_outflow": {
+      "overlap": 5,
+      "share": 0.6694
+    },
+    "top100_outflow": {
+      "overlap": 7,
+      "share": 0.7772
+    },
+    "brokers_overlap_circular": 0,
+    "n_brokers": 18,
+    "n_eligible_voting": 52,
+    "eligible_inactive": 37,
+    "routing_top50_median_balance": 45503.58219744333,
+    "routing_top50_above_threshold": 6
+  },
+  "revocable_share": {
+    "L1_governance_direct": 0.0071,
+    "L2_protocol_owned": 0.0014,
+    "L3_unidentified": 0.685,
+    "lower": 0.0071,
+    "upper_bound": 0.6935
+  },
+  "caveats": [
+    "持币≠投票权，需委托激活；此处为 potential voting power 的上界",
+    "Uniswap 基金会自承大额委托人参与率常低于 50%，实际决策权更集中",
+    "托管地址不代表持有人意志，已单列一档",
+    "n=2，不作为检测器主张，仅为单协议的三层描述"
+  ]
+}

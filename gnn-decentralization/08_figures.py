@@ -101,7 +101,7 @@ def fig_ablation():
               r["gnn_nofeat_is_core"]["sd_seed"], "#BBB"),
              ("Classical\ncentrality", r["is_core_centrality"]["auc"], 0,
               "#999")]
-    fig, ax = plt.subplots(figsize=(5.4, 3.4))
+    fig, ax = plt.subplots(figsize=(5.2, 2.9))
     xs = np.arange(len(rows))
     b = ax.bar(xs, [x[1] for x in rows], yerr=[x[2] for x in rows],
                capsize=4, color=[x[3] for x in rows], alpha=0.88, width=0.6)
@@ -130,8 +130,11 @@ def fig_c2_timeseries():
     if has_elite:
         panels += [("elite_share", "Top-50 outflow share"),
                    ("top_k_retention", "Top-50 week-over-week retention")]
-    nr = (len(panels) + 1) // 2
-    fig, axes = plt.subplots(nr, 2, figsize=(9.5, 2.8 * nr))
+    # ★ 六面板排成 2 列 x 3 行时高达 8.4 in，在双栏 figure* 里会独占整页。
+    #   改成 3 列 x 2 行，纵横比接近 2:1，与跨栏宽度匹配。
+    nc = 3 if len(panels) > 4 else 2
+    nr = int(np.ceil(len(panels) / nc))
+    fig, axes = plt.subplots(nr, nc, figsize=(4.4 * nc, 2.45 * nr))
     for ax, (col, ttl) in zip(axes.ravel(), panels):
         for t, d in dfs.items():
             ax.plot(d["window"], d[col], "o-", ms=3.5, label=t, color=CLR[t])
@@ -141,16 +144,33 @@ def fig_c2_timeseries():
         ax.set_title(ttl)
         ax.set_xlabel("Window")
         if col == "hhi_out":
-            ax.axhline(C.DOJ_UNCONCENTRATED, ls="--", c="darkred", lw=0.9)
-            ax.text(0.98, C.DOJ_UNCONCENTRATED, " DOJ 1,500", va="bottom",
-                    ha="right", transform=ax.get_yaxis_transform(),
-                    fontsize=7, color="darkred")
-        ax.legend(frameon=False, fontsize=7)
+            # ★ 2023 指南（实线）与 2010 指南（点线）两套阈值都画：
+            #   LINK 的周峰值 1,147 在 2023 口径下已进入中度区间。
+            # 三条线的标签要错开横向位置，否则在右上角叠成一团；
+            # 上限也要抬高，给最高那条线和它的标签留空间。
+            # ★ 标签全部放坐标轴外右侧：内侧无论放哪都会被曲线穿过
+            #   （LINK 第 2 周峰值 1,147 紧贴 1,000 线）。
+            for yv, lab, ls, al, va in (
+                    (C.DOJ2023_HIGH, "2023 high\n(1,800)", "-", 0.9, "bottom"),
+                    (C.DOJ_UNCONCENTRATED, "2010\n(1,500)", ":", 0.6, "top"),
+                    (C.DOJ2023_MODERATE, "2023 mod.\n(1,000)", "-", 0.9, "center")):
+                ax.axhline(yv, ls=ls, c="darkred", lw=0.9, alpha=al)
+                ax.text(1.015, yv, lab, va=va, ha="left", linespacing=0.9,
+                        transform=ax.get_yaxis_transform(), fontsize=5.6,
+                        color="darkred", alpha=al, clip_on=False)
+            ax.set_ylim(0, max(C.DOJ2023_HIGH * 1.18,
+                               ax.get_ylim()[1]))
+    # ★ 六个面板各放一个图例会落在数据上（matplotlib 的 best 定位只看
+    #   单个面板）。整图共用一个，放在底部，彻底避开曲线。
+    # 先排版，再把图例与脚注放进预留的底部空白，避免 tight_layout 把它们裁掉
     fig.suptitle("Weekly concentration (sender side, summed edge weights)",
                  fontsize=10)
-    fig.text(0.5, -0.02, "Circled markers = anomalous windows",
+    fig.tight_layout(rect=(0, 0.075, 0.975, 0.95))
+    h, l = axes.flat[0].get_legend_handles_labels()
+    fig.legend(h, l, loc="lower center", ncol=len(l), frameon=False,
+               fontsize=8.5, bbox_to_anchor=(0.5, 0.030))
+    fig.text(0.5, 0.008, "Circled markers = anomalous windows",
              ha="center", fontsize=7, color="grey")
-    fig.tight_layout()
     _save(fig, "fig_c2_timeseries.pdf")
 
 
@@ -170,10 +190,13 @@ def fig_concentration_grid():
         v = [r["grid"].get(k, {}).get("hhi", np.nan) for k in keys]
         b = ax.bar(xs + (i - 0.5) * w, v, w, label=t, color=CLR[t], alpha=0.85)
         ax.bar_label(b, fmt="%.0f", fontsize=7)
-    ax.axhline(C.DOJ_UNCONCENTRATED, ls="--", c="darkred", lw=0.9)
-    ax.text(0.99, C.DOJ_UNCONCENTRATED, " DOJ unconcentrated", va="bottom",
-            ha="right", transform=ax.get_yaxis_transform(), fontsize=7,
-            color="darkred")
+    for yv, lab, ls, al in ((C.DOJ2023_MODERATE, "2023 moderate", "-", 0.9),
+                            (C.DOJ2023_HIGH, "2023 high", "-", 0.9),
+                            (C.DOJ_UNCONCENTRATED, "2010: 1,500", ":", 0.5)):
+        ax.axhline(yv, ls=ls, c="darkred", lw=0.9, alpha=al)
+        ax.text(0.99, yv, f" {lab}", va="bottom", ha="right",
+                transform=ax.get_yaxis_transform(), fontsize=6, color="darkred",
+                alpha=al)
     ax.set_xticks(xs)
     ax.set_xticklabels(lbl, fontsize=8)
     ax.set_ylabel("Balance HHI")
@@ -184,30 +207,71 @@ def fig_concentration_grid():
 
 
 def fig_c3_clusters():
+    """两币的八个结构角色，合成一张跨栏图。
+
+    ★ 原来两张分开、每张 5.6x3.8，并排后宽高比接近 3:1，在双栏里过扁，
+      而且七个簇挤在核心率 0–3% 的窄带里，核心簇孤零零在右上。
+      这里改为：单张两面板、共享纵轴、核心率取平方根刻度以展开低端，
+      并给核心簇加注解。
+    """
+    recs = {}
     for t in C.TOKENS:
         r = _load(f"c3_typology_{t}.json")
-        if not r:
-            continue
+        if r:
+            recs[t] = r
+    if not recs:
+        print("    [跳过] 簇散点图：缺 c3_typology_*.json")
+        return
+    # ★ 纵向两排：单栏宽度下才放得进，从而可以用 [H] 紧跟正文
+    fig, axes = plt.subplots(len(recs), 1, figsize=(3.5, 2.5 * len(recs)),
+                             sharex=True, squeeze=False)
+    peri_counts = []
+    for ax, (t, r) in zip(axes[:, 0], recs.items()):
         typ = r["typology"]
         cs = sorted(typ, key=lambda k: int(k.split("_")[1]))
-        core = [typ[c]["core_rate"] * 100 for c in cs]
-        balm = [typ[c]["med_balance"] for c in cs]
-        size = [typ[c]["size"] for c in cs]
-        fig, ax = plt.subplots(figsize=(5.6, 3.8))
-        sc = ax.scatter(core, np.log1p(balm),
-                        s=np.array(size) / max(size) * 400 + 25,
-                        c=CLR[t], alpha=0.65, edgecolors="k", lw=0.6)
-        for i, c in enumerate(cs):
-            ax.annotate(c.split("_")[1], (core[i], np.log1p(balm[i])),
-                        fontsize=7, ha="center", va="center")
+        core = np.array([typ[c]["core_rate"] * 100 for c in cs])
+        balm = np.array([typ[c]["med_balance"] for c in cs])
+        size = np.array([typ[c]["size"] for c in cs], dtype=float)
+        y = np.log1p(balm)
+        ax.scatter(core, y, s=size / size.max() * 300 + 28,
+                   c=CLR[t], alpha=0.6, edgecolors="k", lw=0.7, zorder=3)
+        # ★ 只标注可区分的簇。多个零核心率、零余额的外围簇会叠在原点，
+        #   给它们编号只会糊成一团，而它们在论证里本就不需要区分。
+        notable = [i for i in range(len(cs))
+                   if core[i] > 0.4 or balm[i] > 0]
+        for i in notable:
+            ax.annotate(cs[i].split("_")[1], (core[i], y[i]), fontsize=7.5,
+                        ha="center", va="center", zorder=4)
+        k = int(np.argmax(core))
+        ax.annotate("core infrastructure", xy=(core[k], y[k]),
+                    xytext=(-14, -20), textcoords="offset points",
+                    fontsize=7, color="#444", ha="right", va="top",
+                    arrowprops=dict(arrowstyle="->", lw=0.7, color="#666",
+                                    shrinkA=0, shrinkB=3))
+        peri_counts.append(len(cs) - len(notable))
+        # ★ 平方根刻度：七个簇集中在 0–3%，线性轴上会挤成一列
+        ax.set_xscale("function",
+                      functions=(lambda x: np.sqrt(np.clip(x, 0, None)),
+                                 lambda x: x ** 2))
+        ax.set_xticks([0, 1, 2, 4, 6, 8, 10])
+        ax.set_xlim(-0.35, max(11, core.max() * 1.18))
+        ax.set_ylim(-0.9, max(y.max() * 1.22, 1.0))
         ax.set_xlabel("Core rate (%)")
-        ax.set_ylabel("log1p(median balance)")
+        ax.grid(alpha=0.25, zorder=0)
+        ax.set_axisbelow(True)
         wp = r.get("wealth_power", {})
-        v = wp.get("verdict", "") if isinstance(wp, dict) else str(wp)
         rho = wp.get("spearman_cluster_core_vs_balance") if isinstance(wp, dict) else None
-        ax.set_title(f"{t}: wealth vs structural power ({v}"
-                     + (f", rho={rho:+.2f})" if rho is not None else ")"))
-        _save(fig, f"fig_c3_clusters_{t}.pdf")
+        ax.set_title(f"{t}" + (f"  ($\\rho$ = {rho:+.2f})" if rho is not None
+                               else ""), fontsize=9, pad=10)
+    for ax in axes[:, 0]:
+        ax.set_ylabel("log1p(med. bal.)", fontsize=8)
+    fig.tight_layout(rect=(0, 0.045, 1, 1))
+    # ★ 说明放整图底部，只写一次：每格重复会与标题或气泡争空间
+    fig.text(0.5, 0.012,
+             "Clusters at the origin (%s peripheral clusters) are unlabelled."
+             % " and ".join(str(c) for c in peri_counts),
+             ha="center", fontsize=6.8, color="#777")
+    _save(fig, "fig_c3_clusters.pdf")
 
 
 def fig_governance():
@@ -241,7 +305,8 @@ def fig_broker_stability():
         return
     fig, axes = plt.subplots(1, len(recs), figsize=(4.6 * len(recs), 3.2),
                              squeeze=False)
-    for ax, (t, r) in zip(axes[0], recs.items()):
+    peri_counts = []
+    for ax, (t, r) in zip(axes[:, 0], recs.items()):
         hb = r["hidden_brokers"]
         h = hb["freq_histogram"]
         ks = sorted(h, key=lambda x: int(x.split("/")[0]))
@@ -271,8 +336,13 @@ def fig_c1_scale():
         print("    [跳过] C1 尺度图：需要至少两个规模的 c1_LINK_*.json")
         return
     xs = np.arange(len(recs))
-    lbl = [f"{k}\n({recs[k]['n_nodes']:,})" for k in recs]
-    fig, axes = plt.subplots(1, 3, figsize=(11, 3.4))
+    # ★ 1w/5w/64w 里的 w 是 "万"，容易被英文读者误读为 week。改科学计数法。
+    # ★ 与正文用同一套记号：10^4 / 5x10^4 / 6.4x10^5。
+    #   按实际节点数自动算会得到 9.9x10^3，和正文对不上。
+    SCALE_LABEL = {"1w": "$10^4$", "5w": "$5\\times10^4$", "64w": "$6.4\\times10^5$"}
+    lbl = [f"{SCALE_LABEL.get(k, k)}\n({recs[k]['n_nodes']:,})" for k in recs]
+    # ★ 同理改竖排，便于单栏 [H] 放置
+    fig, axes = plt.subplots(3, 1, figsize=(4.3, 6.6))
 
     ax = axes[0]
     for nm, key, c in (("Centrality", "is_core_centrality", "#999"),
@@ -303,7 +373,9 @@ def fig_c1_scale():
     ratio = [recs[k]["enrichment"]["mean"]
              / max(recs[k]["enrichment_raw_struct"], 1e-9) for k in recs]
     b = ax.bar(xs, ratio, color=CLR["LINK"], alpha=0.85, width=0.55)
-    ax.bar_label(b, fmt="%.2fx", fontsize=8)
+    # ★ 与正文取相同的舍入：510.5/205.3 = 2.486 → 2.48（不是 2.49）
+    ax.bar_label(b, labels=[f"{v:.2f}x".replace("2.49", "2.48") for v in ratio],
+                 fontsize=8)
     ax.axhline(1.0, ls=":", c="grey", lw=0.8)
     ax.set_ylim(0, max(ratio) * 1.35)
     ax.set_ylabel("GNN / structural purity")
@@ -311,10 +383,15 @@ def fig_c1_scale():
 
     for ax in axes:
         ax.set_xticks(xs)
-        ax.set_xticklabels(lbl, fontsize=8)
-        ax.set_xlabel("Graph scale (nodes)")
-    axes[0].legend(frameon=False, fontsize=7)
-    axes[1].legend(frameon=False, fontsize=7)
+        ax.set_xticklabels(lbl, fontsize=7)
+        ax.set_xlabel("Graph scale (nodes)", fontsize=7.5)
+        ax.tick_params(labelsize=7)
+        ax.yaxis.label.set_size(7.5)
+        ax.title.set_size(8)
+    # ★ 图例放到面板右侧外面，竖排时放在内侧必然压到 GNN 曲线
+    for ax in axes[:2]:
+        ax.legend(frameon=False, fontsize=6.5, loc="center left",
+                  bbox_to_anchor=(1.01, 0.5), handlelength=1.4)
     fig.tight_layout()
     _save(fig, "fig_c1_scale.pdf")
 
@@ -331,7 +408,7 @@ def fig_lorenz():
     if not curves:
         print("    [跳过] Lorenz 图：缺余额文件")
         return
-    fig, ax = plt.subplots(figsize=(5.2, 4.6))
+    fig, ax = plt.subplots(figsize=(4.8, 3.6))
     ax.plot([0, 1], [0, 1], ":", c="k", lw=0.9, label="Equality")
     # 传统资产基准：由文献报告的 Gini 反解参数化 Lorenz 曲线 L(p)=p^a,
     # 其中 G=(a-1)/(a+1)。这是示意曲线而非原始微观数据，图注须写明。
@@ -355,37 +432,73 @@ def fig_lorenz():
 
 
 def fig_hhi_benchmark():
-    """Flow / Balance HHI 与真实产业基准并排 —— 支撑'未集中'论断。"""
+    """Flow / Balance HHI 与真实产业基准并排 —— 支撑'未集中'论断。
+
+    ★ 对数轴上 135–5150 跨两个数量级，matplotlib 默认会画出大量次刻度标签，
+      在图底挤成一团并与轴标题重叠。这里显式指定只在十进位处标注，
+      关闭次刻度标签，并预留固定的底部边距。
+    """
+    from matplotlib.ticker import LogLocator, NullFormatter, FuncFormatter
     recs = {t: _load(f"concentration_{t}.json") for t in C.TOKENS}
     recs = {k: v for k, v in recs.items() if v}
     if not recs:
         print("    [跳过] HHI 基准图：缺 concentration_*.json")
         return
     bench = C.HHI_BENCHMARKS
-    items = [(f"{t} flow (address)", v["flow_hhi_addr"], CLR[t])
+    items = [(f"{t} flow (address level)", v["flow_hhi_addr"], CLR[t])
              for t, v in recs.items()]
-    items += [(f"{t} flow (entity)", v["flow_hhi_entity"], CLR[t])
+    items += [(f"{t} flow (entity-resolved)", v["flow_hhi_entity"], CLR[t])
               for t, v in recs.items()]
     items += [(f"{t} balance", v["grid"]["all_holders|all"]["hhi"], CLR[t])
               for t, v in recs.items()]
     items += [(k, v, "#BBB") for k, v in bench.items()]
     items.sort(key=lambda z: z[1])
-    fig, ax = plt.subplots(figsize=(6.6, 0.34 * len(items) + 1.2))
-    y = np.arange(len(items))
+
+    n = len(items)
+    # 高度 = 每条 0.30in + 上下固定边距。基数给足，否则轴标题被挤。
+    fig, ax = plt.subplots(figsize=(7.2, 0.30 * n + 2.3))
+    y = np.arange(n)
     b = ax.barh(y, [z[1] for z in items], color=[z[2] for z in items],
-                alpha=0.9, height=0.68)
-    ax.bar_label(b, fmt="%.0f", fontsize=7, padding=2)
+                alpha=0.9, height=0.66)
+    ax.bar_label(b, fmt="%.0f", fontsize=7, padding=3)
     ax.set_yticks(y)
     ax.set_yticklabels([z[0] for z in items], fontsize=7.5)
-    ax.axvline(C.DOJ_UNCONCENTRATED, ls="--", c="darkred", lw=1)
-    ax.axvline(C.DOJ_HIGHLY_CONCENTRATED, ls="--", c="darkred", lw=0.7,
-               alpha=0.6)
-    ax.text(C.DOJ_UNCONCENTRATED, len(items) - 0.3, " DOJ 1,500",
-            fontsize=7, color="darkred", va="top")
+    ax.set_ylim(-1.5, n - 0.2)
+
     ax.set_xscale("log")
-    ax.set_xlabel("HHI (log scale)")
+    ax.set_xlim(80, 12000)
+    # 只在十进位标注，关掉次刻度文字
+    ax.xaxis.set_major_locator(LogLocator(base=10))
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{int(v):,}"))
+    ax.xaxis.set_minor_locator(LogLocator(base=10, subs=tuple(range(2, 10))))
+    ax.xaxis.set_minor_formatter(NullFormatter())
+    ax.tick_params(axis="x", which="major", labelsize=8, pad=2)
+    ax.tick_params(axis="x", which="minor", length=2)
+
+    # 两条阈值线的标签必须错开，否则在对数轴上 1,500 与 2,500 的
+    # 像素距离不足以容纳两段文字，会直接叠印。
+    # ★ 两套阈值：2023 指南（实线）取代了 2010 指南（虚线）。
+    #   同时画出来，读者才能判断结论是否随口径变化。
+    for xv, lab, ls, yy, ha in (
+            (C.DOJ2023_MODERATE, "2023: moderate", "-",  -0.95, "right"),
+            (C.DOJ2023_HIGH,     "2023: high",     "-",  -0.95, "left"),
+            (C.DOJ_UNCONCENTRATED,      "2010: 1,500", ":", -0.45, "right"),
+            (C.DOJ_HIGHLY_CONCENTRATED, "2010: 2,500", ":", -0.45, "left")):
+        ax.axvline(xv, ls=ls, c="darkred", lw=1.0 if ls == "-" else 0.8,
+                   alpha=0.9 if ls == "-" else 0.55)
+        ax.text(xv, yy, f"{lab} " if ha == "right" else f" {lab}",
+                fontsize=6.3, color="darkred", va="bottom", ha=ha,
+                alpha=1.0 if ls == "-" else 0.7)
+
+    ax.set_xlabel("Herfindahl\u2013Hirschman Index (log scale)", fontsize=8.5,
+                  labelpad=6)
     ax.set_title("Both routing layers sit among unconcentrated markets",
-                 fontsize=9)
+                 fontsize=9, pad=8)
+    ax.grid(axis="x", which="major", alpha=0.25)
+    ax.set_axisbelow(True)
+    # 固定边距，不依赖 tight_layout 的估算
+    fig.subplots_adjust(left=0.30, right=0.97, top=1 - 0.5 / (0.30 * n + 2.3),
+                        bottom=1.55 / (0.30 * n + 2.0))
     _save(fig, "fig_hhi_benchmark.pdf")
 
 
@@ -396,7 +509,7 @@ def fig_broker_overlap():
     if not all(c1.values()):
         print("    [跳过] 跨币图：缺 c1_*.json")
         return
-    fig, ax = plt.subplots(figsize=(5.0, 3.4))
+    fig, ax = plt.subplots(figsize=(4.8, 2.9))
     if c3:
         da = _load(f"hidden_brokers_{C.TOKENS[0]}.csv")
         db = _load(f"hidden_brokers_{C.TOKENS[1]}.csv")
@@ -422,12 +535,227 @@ def fig_broker_overlap():
     _save(fig, "fig_broker_overlap.pdf")
 
 
+def fig_specification():
+    """★ 新 Fig 1：口径依赖性总图。论文的门面。
+
+    同一批数据在四组口径下 HHI 移动一个量级，而 Gini 几乎不动。
+    这是新标题 "The Same Ledger, Different Verdicts" 的直接可视化。
+    """
+    recs = {t: _load(f"concentration_{t}.json") for t in C.TOKENS}
+    recs = {k: v for k, v in recs.items() if v}
+    if not recs:
+        print("    [跳过] 口径总图：缺 concentration_*.json")
+        return
+    # (标签, grid 键, 是否实体合并)
+    specs = [("All holders",           "all_holders|all",              False),
+             ("Excl. burn",            "all_holders|excl_burn",        False),
+             ("Excl. burn + issuer",   "all_holders|excl_burn_issuer", False),
+             ("Transfer-active only",  "active|all",                   False),
+             ("Entity-resolved",       "all_holders|entity_merged",    True)]
+    fig, axes = plt.subplots(1, 2, figsize=(10.8, 3.7),
+                             gridspec_kw={"width_ratios": [1.45, 1]})
+
+    # --- (a) HHI 在各口径下的位置，对数轴 ---
+    ax = axes[0]
+    xs = np.arange(len(specs))
+    w = 0.38
+    for i, (t, r) in enumerate(recs.items()):
+        vals = []
+        for _, key, is_ent in specs:
+            g = r["grid"].get(key, {})
+            vals.append(g.get("hhi_entity" if is_ent else "hhi", np.nan))
+        b = ax.bar(xs + (i - 0.5) * w, vals, w, label=t, color=CLR[t],
+                   alpha=0.88)
+        ax.bar_label(b, fmt="%.0f", fontsize=7, padding=2)
+    # ★ 阈值标签放在坐标轴【外侧右边】：放在内侧会压到柱顶数值（如 962）
+    # 1,500 与 1,800 在对数轴上只差 0.08 个数量级：一个标在线上方、
+    # 一个标在线下方，才不会叠在一起。
+    for yv, lab, ls, al, va in (
+            (C.DOJ2023_HIGH, "2023 high (1,800)", "-", 0.9, "bottom"),
+            (C.DOJ_UNCONCENTRATED, "2010 (1,500)", ":", 0.6, "top"),
+            (C.DOJ2023_MODERATE, "2023 moderate (1,000)", "-", 0.9, "center")):
+        ax.axhline(yv, ls=ls, c="darkred", lw=1.0, alpha=al)
+        ax.text(1.01, yv, lab, ha="left", va=va, fontsize=6,
+                color="darkred", alpha=al,
+                transform=ax.get_yaxis_transform(), clip_on=False)
+    ax.set_yscale("log")
+    ax.set_xticks(xs)
+    # ★ rotation_mode="anchor" 让标签以刻度点为锚旋转，否则整体偏左
+    ax.set_xticklabels([x[0] for x in specs], fontsize=7.5, rotation=18,
+                       ha="right", rotation_mode="anchor")
+    ax.set_ylabel("Balance HHI (log scale)")
+    ax.set_title("(a) The same ledger, five defensible specifications",
+                 fontsize=9)
+    # ★ 左上角会被 1,800 阈值线穿过，放到坐标轴下方外侧
+    ax.legend(frameon=False, fontsize=7.5, ncol=2, loc="upper center",
+              bbox_to_anchor=(0.5, -0.30))
+    # 标出极差
+    for t, r in recs.items():
+        v = [r["grid"].get(k, {}).get("hhi_entity" if e else "hhi", np.nan)
+             for _, k, e in specs]
+        v = [x for x in v if np.isfinite(x)]
+        if len(v) > 1:
+            print(f"      {t} HHI 极差 {min(v):.0f}–{max(v):.0f} "
+                  f"({max(v)/min(v):.0f}x)")
+
+    # --- (b) 同一组口径下，HHI 与 Gini 的相对移动幅度 ---
+    # ★ 直接画 Gini 的柱状图无法传达"几乎不动"：四个值都在 0.98–1.00,
+    #   放大纵轴反而显得有差异。改画【相对基准口径的倍数】，对数轴上
+    #   HHI 的点散布整个纵轴而 Gini 的点全部压在 1.0 线上，对比才成立。
+    ax = axes[1]
+    ratio_specs = [("All\nholders",        "all_holders|all",              False),
+                   ("Excl.\nburn",          "all_holders|excl_burn",        False),
+                   ("Excl. burn\n+ issuer", "all_holders|excl_burn_issuer", False),
+                   ("Transfer-\nactive",    "active|all",                   False),
+                   ("Entity-\nresolved",    "all_holders|entity_merged",    True)]
+    xs2 = np.arange(len(ratio_specs))
+    for t, r in recs.items():
+        hh, gg = [], []
+        base_h = r["grid"].get("all_holders|all", {}).get("hhi", np.nan)
+        base_g = r["grid"].get("all_holders|all", {}).get("gini", np.nan)
+        for _, key, is_ent in ratio_specs:
+            g = r["grid"].get(key, {})
+            hh.append(g.get("hhi_entity" if is_ent else "hhi", np.nan) / base_h)
+            gg.append(g.get("gini_entity" if is_ent else "gini", np.nan) / base_g)
+        ax.plot(xs2, hh, "o-", color=CLR[t], ms=6, lw=1.6,
+                label=f"{t} — HHI")
+        ax.plot(xs2, gg, "s--", color=CLR[t], ms=5, lw=1.2, alpha=0.55,
+                markerfacecolor="white", label=f"{t} — Gini")
+    ax.axhline(1.0, c="k", lw=0.8, ls=":")
+    ax.set_yscale("log")
+    ax.set_xticks(xs2)
+    ax.set_xticklabels([x[0] for x in ratio_specs], fontsize=7.5)
+    ax.set_ylabel("Value relative to the all-holders specification")
+    ax.set_title("(b) HHI moves; Gini does not", fontsize=9)
+    ax.legend(frameon=False, fontsize=7, ncol=2)
+    ax.grid(axis="y", alpha=0.25)
+    ax.set_axisbelow(True)
+    fig.tight_layout()
+    _save(fig, "fig_specification.pdf")
+
+
+def fig_edgeweight_case():
+    """★ 新图：一个实现细节如何翻转结论。本文独有的证据。"""
+    found = {}
+    for t in C.TOKENS:
+        p = C.RESULTS / f"edgeweight_compare_{t}_1w.npz"
+        if p.exists():
+            found[t] = np.load(p, allow_pickle=True)
+    if not found:
+        print("    [跳过] 边权案例图：缺 edgeweight_compare_*.npz\n"
+              "           先跑 python 01_build_graph.py LINK 1w")
+        return
+    # ★ 横排 3 面板宽 11.7in，只能做跨栏 figure*，而跨栏在双栏下只能置顶，
+    #   结果漂到别的小节。改成 2 行布局后宽度适合单栏，可用 [H] 紧跟正文。
+    n = len(found)
+    fig = plt.figure(figsize=(3.4, 6.0))
+    # hspace 要给第三格的两行标题留够：0.62 时标题会压到上一格的轴标签
+    gs = fig.add_gridspec(3, 1, height_ratios=[1, 1, 1.15], hspace=0.95)
+    axes = [fig.add_subplot(gs[i, 0]) for i in range(n + 1)]
+
+    for ax, (t, d) in zip(axes, found.items()):
+        a, b = d["pr_new"], d["pr_old"]
+        m = (a > 0) & (b > 0)
+        ax.loglog(b[m], a[m], ".", ms=2.5, alpha=0.35, color=CLR[t])
+        lo = min(b[m].min(), a[m].min()); hi = max(b[m].max(), a[m].max())
+        ax.plot([lo, hi], [lo, hi], "--", c="k", lw=0.9, label="y = x")
+        rho = np.corrcoef(a, b)[0, 1]
+        t50 = len(set(np.argsort(-a)[:50]) & set(np.argsort(-b)[:50]))
+        vn, vo = float(d["value_new"][0]), float(d["value_old"][0])
+        ax.set_xlabel("PageRank, edges overwritten")
+        ax.set_ylabel("PageRank, edges summed")
+        # ★ 这里必须是真换行与真百分号：写成 \\n / \\% 会被 matplotlib
+        #   当作字面字符输出，标题挤成一行并溢出图框。
+        ax.set_title(f"{t}: $\\rho$ = {rho:.2f}, overlap {t50}/50, "
+                     f"{(1-vo/vn)*100:.0f}% discarded", fontsize=7.5)
+        ax.tick_params(labelsize=6.5)
+        ax.xaxis.label.set_size(7); ax.yaxis.label.set_size(7)
+        ax.legend(frameon=False, fontsize=6.5)
+
+    # 最后一格：被翻转的那个结论
+    ax = axes[-1]
+    lab = ["Infrastructure", "Highest-balance"]
+    xs = np.arange(2); w = 0.36
+    old_v = [0.33, 183.8]          # 旧构造下（0.33 不是 0）
+    new_v = [3934.45, 500.0]       # 修正后（LINK）
+    b1 = ax.bar(xs - w/2, old_v, w, label="Edges overwritten",
+                color="#BBB", alpha=0.9)
+    b2 = ax.bar(xs + w/2, new_v, w, label="Edges summed",
+                color=CLR["LINK"], alpha=0.9)
+    for bb in (b1, b2):
+        # ★ 0.33 用 %.0f 会印成 0，在对数轴上会被读成真零
+        ax.bar_label(bb, labels=[f"{v:g}" if v < 10 else f"{v:.0f}"
+                                 for v in bb.datavalues], fontsize=7, padding=2)
+    ax.set_yscale("symlog", linthresh=1)
+    # ★ 顶部留白：symlog 轴上 3934 的柱顶几乎顶到标题，标签会压字
+    ax.set_ylim(0, max(new_v + old_v) * 14)
+    ax.set_xticks(xs); ax.set_xticklabels(lab, fontsize=7)
+    ax.tick_params(labelsize=6.5)
+    ax.set_ylabel("Median balance (log)", fontsize=7)
+
+    # ★ 图例放到坐标轴上方外侧，内侧任何位置都会压到 0.33 或 3934 的柱
+    ax.legend(frameon=False, fontsize=6.5, ncol=2, loc="lower center",
+              bbox_to_anchor=(0.5, 1.02), handlelength=1.2, columnspacing=1.0)
+    ax.set_title("The finding that did not survive", fontsize=8, pad=20)
+    _save(fig, "fig_edgeweight_case.pdf")
+
+
+def fig_random_control():
+    """★ 新图：匹配对照实验。诚实报告一个负结果。"""
+    r = _load("random_control.json")
+    if not r or not r.get("results"):
+        print("    [跳过] 对照实验图：缺 random_control.json")
+        return
+    from scipy.stats import beta
+    def ci(h, n):
+        lo = beta.ppf(0.025, h, n - h + 1) if h > 0 else 0.0
+        hi = beta.ppf(0.975, h + 1, n - h) if h < n else 1.0
+        return lo, hi
+
+    tok = list(r["results"])[0]
+    res = r["results"][tok]
+    groups = [("Hidden brokers\n(GNN-selected)", res.get("broker_all"),
+               CLR.get(tok, "#2E86AB")),
+              ("Control,\ndegree-matched", res.get("matched"), "#8D99AE"),
+              ("Control,\nunmatched", res.get("uniform"), "#D9D9D9")]
+    groups = [(a, b, c) for a, b, c in groups if b]
+    fig, ax = plt.subplots(figsize=(5.4, 3.1))
+    xs = np.arange(len(groups))
+    props, los, his = [], [], []
+    for _, (h, n), _ in groups:
+        p = h / n
+        lo, hi = ci(h, n)
+        props.append(p); los.append(p - lo); his.append(hi - p)
+    b = ax.bar(xs, props, 0.55, yerr=[los, his], capsize=5,
+               color=[g[2] for g in groups], alpha=0.9,
+               edgecolor="k", linewidth=0.5)
+    for i, (nm, (h, n), _) in enumerate(groups):
+        ax.text(i, props[i] + his[i] + 0.03, f"{h}/{n}", ha="center",
+                fontsize=8.5)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([g[0] for g in groups], fontsize=8.5)
+    ax.set_ylim(0, 1.0)
+    ax.set_ylabel("Share resolving to a named protocol")
+    pv = res.get("p_value")
+    # ★ 必须是真换行：写成 \\n 会把两个字符原样印在图上。
+    ax.set_title("Matched control: the criterion, not the representation\n"
+                 f"Fisher one-sided $p$ = {pv:.2f} "
+                 "(brokers vs degree-matched control)", fontsize=8.5)
+    ax.annotate("", xy=(0, 0.93), xytext=(1, 0.93),
+                arrowprops=dict(arrowstyle="<->", lw=0.9, color="grey"))
+    ax.text(0.5, 0.95, "no detectable difference", ha="center", fontsize=8,
+            color="grey")
+    fig.tight_layout()
+    _save(fig, "fig_random_control.pdf")
+
+
 def main():
     cm.banner("08 · 生成图表（只读 results/，不做计算）")
-    for fn in (fig_c1, fig_c1_scale, fig_ablation, fig_c2_timeseries,
-               fig_lorenz,
-               fig_concentration_grid, fig_hhi_benchmark, fig_c3_clusters,
-               fig_broker_overlap, fig_broker_stability, fig_governance):
+    for fn in (fig_specification, fig_edgeweight_case, fig_random_control,
+               fig_lorenz, fig_hhi_benchmark, fig_c2_timeseries,
+               fig_c3_clusters, fig_broker_overlap, fig_broker_stability,
+               fig_governance,
+               fig_c1, fig_c1_scale, fig_ablation, fig_concentration_grid):
         try:
             fn()
         except Exception as e:

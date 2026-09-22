@@ -1,0 +1,79 @@
+{
+  "token": "LINK",
+  "grid": {
+    "all_holders|all": {
+      "n": 885011,
+      "gini": 0.9897759674764932,
+      "top1": 0.931868961562293,
+      "top10": 0.3291187939440905,
+      "hhi": 135.03216344558734
+    },
+    "all_holders|excl_burn": {
+      "n": 885010,
+      "gini": 0.989776006394519,
+      "top1": 0.9318690636672009,
+      "top10": 0.32911883000564585,
+      "hhi": 135.03219303642476
+    },
+    "all_holders|excl_burn_issuer": {
+      "n": 885003,
+      "gini": 0.9870753115832543,
+      "top1": 0.9137867866996401,
+      "top10": 0.2572059447201757,
+      "hhi": 115.41769316153385
+    },
+    "active|all": {
+      "n": 565938,
+      "gini": 0.9840991051195882,
+      "top1": 0.9185171698169092,
+      "top10": 0.32913430908159763,
+      "hhi": 135.04489480756467
+    },
+    "active|excl_burn": {
+      "n": 565937,
+      "gini": 0.9840991558101833,
+      "top1": 0.9185172704636052,
+      "top10": 0.32913434514655293,
+      "hhi": 135.04492440258684
+    },
+    "active|excl_burn_issuer": {
+      "n": 565930,
+      "gini": 0.9798987110808443,
+      "top1": 0.896904084591538,
+      "top10": 0.2572212930937383,
+      "hhi": 115.43146806298786
+    },
+    "all_holders|entity_merged": {
+      "hhi_addr": 135.03216344558734,
+      "hhi_entity": 561.6963188119266,
+      "gini_addr": 0.9897759674764932,
+      "gini_entity": 0.9898073689655772
+    },
+    "active|entity_merged": {
+      "hhi_addr": 135.04489480756467,
+      "hhi_entity": 561.7492766532771,
+      "gini_addr": 0.9840991051195882,
+      "gini_entity": 0.9841479076270362
+    }
+  },
+  "burned_pct": 0.0,
+  "reserve_pct": 21.0,
+  "flow_hhi_addr": 421.2,
+  "flow_hhi_entity": 653.6,
+  "entity_coverage_outflow": 0.3347,
+  "flow_hhi_entity_max": 1508.8,
+  "top_entity_outflow_share": 0.1835,
+  "top_entities": {
+    "Binance": 0.1835,
+    "Coinbase": 0.0482,
+    "Chainlink": 0.0348,
+    "Wintermute": 0.0341,
+    "Crypto.com": 0.0112,
+    "CoW Protocol": 0.0069,
+    "Gate.io": 0.0051,
+    "Bitfinex": 0.0027,
+    "Uniswap": 0.0014,
+    "FalconX": 0.0009
+  },
+  "caveat": "实体合并仅覆盖可识别地址，结果为下界"
+}

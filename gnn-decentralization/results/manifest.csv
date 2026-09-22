@@ -1,0 +1,168 @@
+timestamp,script,token,metric,value,note
+2026-08-26 21:22:21,00_data_check,LINK,n_transfers,1233497,
+2026-08-26 21:22:21,00_data_check,LINK,n_holders,885011,
+2026-08-26 21:22:21,00_data_check,LINK,n_active_raw,642126,
+2026-08-26 21:22:21,00_data_check,LINK,dup_edge_value_loss_pct,49.81,v16 DiGraph 覆盖导致的金额丢失
+2026-08-26 21:22:42,00_data_check,UNI,n_transfers,433856,
+2026-08-26 21:22:42,00_data_check,UNI,n_holders,386029,
+2026-08-26 21:22:42,00_data_check,UNI,n_active_raw,38667,
+2026-08-26 21:22:42,00_data_check,UNI,dup_edge_value_loss_pct,58.79,v16 DiGraph 覆盖导致的金额丢失
+2026-08-26 21:29:43,01_build_graph,LINK,1w_value_loss_pct,85.56,
+2026-08-26 21:29:43,01_build_graph,LINK,1w_pagerank_corr,0.8278,
+2026-08-26 21:29:43,01_build_graph,LINK,1w_top50_overlap,31,
+2026-08-26 21:29:43,01_build_graph,LINK,1w_n_nodes,9876,
+2026-08-26 21:29:43,01_build_graph,LINK,1w_n_anchors,74,
+2026-08-26 21:29:58,01_build_graph,UNI,1w_value_loss_pct,85.26,
+2026-08-26 21:29:58,01_build_graph,UNI,1w_pagerank_corr,0.6963,
+2026-08-26 21:29:58,01_build_graph,UNI,1w_top50_overlap,33,
+2026-08-26 21:29:58,01_build_graph,UNI,1w_n_nodes,9765,
+2026-08-26 21:29:58,01_build_graph,UNI,1w_n_anchors,57,
+2026-08-26 21:32:54,02_c1,LINK,1w_gnn_is_core,0.918,sd_seed=0.0147
+2026-08-26 21:32:54,02_c1,LINK,1w_gnn_balance,0.9137,sd_seed=0.0201
+2026-08-26 21:32:54,02_c1,LINK,1w_gnn_nofeat_is_core,0.4543,sd_seed=0.0541
+2026-08-26 21:32:54,02_c1,LINK,1w_purity,0.2576,sd_seed=0.0229
+2026-08-26 21:32:54,02_c1,LINK,1w_enrichment,34.3748,sd_seed=3.0596
+2026-08-26 21:34:02,02_c1,UNI,1w_gnn_is_core,0.8474,sd_seed=0.018
+2026-08-26 21:34:02,02_c1,UNI,1w_gnn_balance,0.8275,sd_seed=0.0149
+2026-08-26 21:34:02,02_c1,UNI,1w_gnn_nofeat_is_core,0.554,sd_seed=0.055
+2026-08-26 21:34:02,02_c1,UNI,1w_purity,0.1154,sd_seed=0.0116
+2026-08-26 21:34:02,02_c1,UNI,1w_enrichment,19.7765,sd_seed=1.9868
+2026-08-26 21:43:36,02_c1,LINK,1w_gnn_is_core,0.9128,sd_seed=0.0238
+2026-08-26 21:43:36,02_c1,LINK,1w_gnn_balance,0.9146,sd_seed=0.0141
+2026-08-26 21:43:36,02_c1,LINK,1w_gnn_nofeat_is_core,0.4309,sd_seed=0.0369
+2026-08-26 21:43:36,02_c1,LINK,1w_purity,0.2576,sd_seed=0.0172
+2026-08-26 21:43:36,02_c1,LINK,1w_enrichment,34.3748,sd_seed=2.2958
+2026-08-26 21:45:26,02_c1,UNI,1w_gnn_is_core,0.8449,sd_seed=0.0186
+2026-08-26 21:45:26,02_c1,UNI,1w_gnn_balance,0.8289,sd_seed=0.0182
+2026-08-26 21:45:26,02_c1,UNI,1w_gnn_nofeat_is_core,0.5007,sd_seed=0.0587
+2026-08-26 21:45:26,02_c1,UNI,1w_purity,0.1158,sd_seed=0.0188
+2026-08-26 21:45:26,02_c1,UNI,1w_enrichment,19.8366,sd_seed=3.2184
+2026-08-26 21:47:03,03_c2_weekly,LINK,gini_flow,0.9793,周度·发送方·求和边权
+2026-08-26 21:47:03,03_c2_weekly,LINK,top1pct_flow,0.8114,周度·发送方·求和边权
+2026-08-26 21:47:03,03_c2_weekly,LINK,flow_hhi,421.2317,周度·发送方·求和边权
+2026-08-26 21:47:19,03_c2_weekly,UNI,gini_flow,0.9686,周度·发送方·求和边权
+2026-08-26 21:47:19,03_c2_weekly,UNI,top1pct_flow,0.7067,周度·发送方·求和边权
+2026-08-26 21:47:19,03_c2_weekly,UNI,flow_hhi,385.816,周度·发送方·求和边权
+2026-08-26 21:57:14,02_c1,LINK,1w_gnn_is_core,0.9125,sd_seed=0.0227
+2026-08-26 21:57:14,02_c1,LINK,1w_gnn_balance,0.915,sd_seed=0.0144
+2026-08-26 21:57:14,02_c1,LINK,1w_gnn_nofeat_is_core,0.4278,sd_seed=0.0418
+2026-08-26 21:57:14,02_c1,LINK,1w_purity,0.2592,sd_seed=0.0178
+2026-08-26 21:57:14,02_c1,LINK,1w_enrichment,34.5912,sd_seed=2.3711
+2026-08-26 22:00:40,02_c1,UNI,1w_gnn_is_core,0.8466,sd_seed=0.0218
+2026-08-26 22:00:40,02_c1,UNI,1w_gnn_balance,0.8275,sd_seed=0.0197
+2026-08-26 22:00:40,02_c1,UNI,1w_gnn_nofeat_is_core,0.5107,sd_seed=0.0639
+2026-08-26 22:00:40,02_c1,UNI,1w_purity,0.1119,sd_seed=0.0159
+2026-08-26 22:00:40,02_c1,UNI,1w_enrichment,19.1753,sd_seed=2.7283
+2026-08-26 22:04:51,06_concentration,LINK,balance_hhi_main,135.0,主口径=全部持币地址
+2026-08-26 22:04:51,06_concentration,LINK,flow_hhi_entity,653.6,
+2026-08-26 22:05:12,06_concentration,UNI,balance_hhi_main,871.8,主口径=全部持币地址
+2026-08-26 22:05:12,06_concentration,UNI,flow_hhi_entity,667.1,
+2026-08-26 22:11:56,05_c3_roles,LINK,n_brokers,39,"v16=40, dropped=1"
+2026-08-26 22:12:24,05_c3_roles,UNI,n_brokers,27,"v16=27, dropped=0"
+2026-08-26 22:18:16,05_c3_roles,LINK,n_brokers,39,"v16=40, dropped=1"
+2026-08-26 22:18:16,05_c3_roles,UNI,n_brokers,27,"v16=27, dropped=0"
+2026-08-26 22:25:11,05_c3_roles,LINK,n_brokers,34,"v16=38, dropped=4"
+2026-08-26 22:25:41,05_c3_roles,UNI,n_brokers,23,"v16=23, dropped=0"
+2026-08-26 22:37:17,05_c3_roles,LINK,n_brokers,23,"v16=23, dropped=0"
+2026-08-26 22:40:18,05_c3_roles,UNI,n_brokers,14,"v16=15, dropped=1"
+2026-08-26 22:55:37,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-08-26 22:55:38,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-08-26 22:56:27,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-08-26 22:56:27,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-08-26 23:06:02,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-08-26 23:06:03,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-08-26 23:13:02,07_governance,UNI,nakamoto_quorum[All holders],1,
+2026-08-26 23:13:02,07_governance,UNI,nakamoto_quorum[Excl. non-voting],2,
+2026-08-26 23:13:02,07_governance,UNI,nakamoto_quorum[Excl. custodial],2,
+2026-08-26 23:14:56,04_c2_procrustes,LINK,persistent_elite,157,
+2026-08-26 23:14:56,04_c2_procrustes,LINK,normal_drift_mean,1.3699,
+2026-08-26 23:15:34,04_c2_procrustes,UNI,persistent_elite,53,
+2026-08-26 23:15:34,04_c2_procrustes,UNI,normal_drift_mean,1.5061,
+2026-08-26 23:22:22,03_c2_weekly,LINK,gini_flow,0.9793,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:22,03_c2_weekly,LINK,top1pct_flow,0.8114,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:22,03_c2_weekly,LINK,flow_hhi,421.2317,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:22,03_c2_weekly,LINK,elite_share,0.7075,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:22,03_c2_weekly,LINK,top_k_retention,0.55,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:37,03_c2_weekly,UNI,gini_flow,0.9686,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:37,03_c2_weekly,UNI,top1pct_flow,0.7067,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:37,03_c2_weekly,UNI,flow_hhi,385.816,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:37,03_c2_weekly,UNI,elite_share,0.7741,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:22:37,03_c2_weekly,UNI,top_k_retention,0.63,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:26,03_c2_weekly,LINK,gini_flow,0.9793,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:26,03_c2_weekly,LINK,top1pct_flow,0.8114,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:26,03_c2_weekly,LINK,flow_hhi,421.2317,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:26,03_c2_weekly,LINK,elite_share,0.7075,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:26,03_c2_weekly,LINK,top_k_retention,0.56,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:41,03_c2_weekly,UNI,gini_flow,0.9686,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:41,03_c2_weekly,UNI,top1pct_flow,0.7067,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:41,03_c2_weekly,UNI,flow_hhi,385.816,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:41,03_c2_weekly,UNI,elite_share,0.7741,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:31:41,03_c2_weekly,UNI,top_k_retention,0.63,周度·发送方·求和边权 (elite K=50)
+2026-08-26 23:34:09,07_governance,UNI,nakamoto_quorum[All holders],1,
+2026-08-26 23:34:09,07_governance,UNI,nakamoto_quorum[Excl. non-voting],2,
+2026-08-26 23:34:09,07_governance,UNI,nakamoto_quorum[Excl. custodial],2,
+2026-08-26 23:47:43,09_verify_gap,BOTH,n_todo_verify,14,
+2026-08-26 23:47:43,09_verify_gap,BOTH,n_dropped,6,
+2026-08-27 00:08:46,10_fix_verification,BOTH,n_reassigned,16,
+2026-08-27 00:08:46,10_fix_verification,BOTH,n_to_verify,14,
+2026-08-27 00:38:50,01_build_graph,LINK,5w_value_loss_pct,76.64,
+2026-08-27 00:38:50,01_build_graph,LINK,5w_pagerank_corr,0.8027,
+2026-08-27 00:38:50,01_build_graph,LINK,5w_top50_overlap,35,
+2026-08-27 00:38:50,01_build_graph,LINK,5w_n_nodes,49587,
+2026-08-27 00:38:50,01_build_graph,LINK,5w_n_anchors,86,
+2026-08-27 00:42:46,02_c1,LINK,5w_gnn_is_core,0.9228,sd_seed=0.0104
+2026-08-27 00:42:46,02_c1,LINK,5w_gnn_balance,0.8702,sd_seed=0.0161
+2026-08-27 00:42:46,02_c1,LINK,5w_gnn_nofeat_is_core,0.5015,sd_seed=0.1452
+2026-08-27 00:42:46,02_c1,LINK,5w_purity,0.2614,sd_seed=0.034
+2026-08-27 00:42:46,02_c1,LINK,5w_enrichment,150.7187,sd_seed=19.6182
+2026-08-27 01:24:34,01_build_graph,LINK,64w_n_nodes,641276,
+2026-08-27 01:24:34,01_build_graph,LINK,64w_n_anchors,161,
+2026-08-27 08:06:12,02_c1,LINK,64w_gnn_is_core,0.7583,sd_seed=0.0258
+2026-08-27 08:06:12,02_c1,LINK,64w_gnn_balance,0.9274,sd_seed=0.0116
+2026-08-27 08:06:12,02_c1,LINK,64w_gnn_nofeat_is_core,0.4837,sd_seed=0.0804
+2026-08-27 08:06:12,02_c1,LINK,64w_purity,0.1306,sd_seed=0.0072
+2026-08-27 08:06:12,02_c1,LINK,64w_enrichment,520.3569,sd_seed=28.5669
+2026-08-27 09:33:41,02_c1,LINK,1w_gnn_is_core,0.9119,sd_seed=0.0205
+2026-08-27 09:33:41,02_c1,LINK,1w_gnn_balance,0.9131,sd_seed=0.0146
+2026-08-27 09:33:41,02_c1,LINK,1w_gnn_nofeat_is_core,0.4606,sd_seed=0.0505
+2026-08-27 09:33:41,02_c1,LINK,1w_purity,0.2578,sd_seed=0.0163
+2026-08-27 09:33:41,02_c1,LINK,1w_enrichment,34.4109,sd_seed=2.1789
+2026-08-27 09:37:44,02_c1,UNI,1w_gnn_is_core,0.8456,sd_seed=0.0291
+2026-08-27 09:37:44,02_c1,UNI,1w_gnn_balance,0.8279,sd_seed=0.0189
+2026-08-27 09:37:44,02_c1,UNI,1w_gnn_nofeat_is_core,0.5227,sd_seed=0.0448
+2026-08-27 09:37:44,02_c1,UNI,1w_purity,0.1107,sd_seed=0.0163
+2026-08-27 09:37:44,02_c1,UNI,1w_enrichment,18.965,sd_seed=2.7924
+2026-08-27 09:40:44,02_c1,LINK,5w_gnn_is_core,0.9209,sd_seed=0.0107
+2026-08-27 09:40:44,02_c1,LINK,5w_gnn_balance,0.8696,sd_seed=0.0167
+2026-08-27 09:40:44,02_c1,LINK,5w_gnn_nofeat_is_core,0.4914,sd_seed=0.1279
+2026-08-27 09:40:44,02_c1,LINK,5w_purity,0.2607,sd_seed=0.0312
+2026-08-27 09:40:44,02_c1,LINK,5w_enrichment,150.3165,sd_seed=18.0115
+2026-08-27 09:57:11,02_c1,LINK,64w_gnn_is_core,0.7569,sd_seed=0.0264
+2026-08-27 09:57:11,02_c1,LINK,64w_gnn_balance,0.9279,sd_seed=0.0126
+2026-08-27 09:57:11,02_c1,LINK,64w_gnn_nofeat_is_core,0.4379,sd_seed=0.0443
+2026-08-27 09:57:11,02_c1,LINK,64w_purity,0.1282,sd_seed=0.005
+2026-08-27 09:57:11,02_c1,LINK,64w_enrichment,510.4611,sd_seed=19.8432
+2026-08-27 10:06:35,10_fix_verification,BOTH,n_reassigned,16,
+2026-08-27 10:06:35,10_fix_verification,BOTH,n_to_verify,14,
+2026-08-27 10:06:37,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-08-27 10:06:37,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-08-27 10:14:20,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-08-27 10:14:21,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-08-27 10:17:32,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-08-27 10:17:32,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-09-15 20:45:21,11_random_control,BOTH,n_blind,38,
+2026-09-15 20:47:25,11_random_control,BOTH,n_blind,38,
+2026-09-15 21:24:38,12_reverify_all,BOTH,n_reverify,42,
+2026-09-15 21:40:03,12_reverify_all,BOTH,n_reverify,42,
+2026-09-16 08:04:46,05_c3_roles,LINK,n_brokers,30,"v16=30, dropped=0"
+2026-09-16 08:04:46,05_c3_roles,UNI,n_brokers,18,"v16=18, dropped=0"
+2026-09-16 12:27:21,01_build_graph,LINK,1w_value_loss_pct,85.56,
+2026-09-16 12:27:21,01_build_graph,LINK,1w_pagerank_corr,0.8278,
+2026-09-16 12:27:21,01_build_graph,LINK,1w_top50_overlap,31,
+2026-09-16 12:27:21,01_build_graph,LINK,1w_n_nodes,9876,
+2026-09-16 12:27:21,01_build_graph,LINK,1w_n_anchors,74,
+2026-09-16 12:28:19,01_build_graph,UNI,1w_value_loss_pct,85.26,
+2026-09-16 12:28:19,01_build_graph,UNI,1w_pagerank_corr,0.6963,
+2026-09-16 12:28:19,01_build_graph,UNI,1w_top50_overlap,33,
+2026-09-16 12:28:19,01_build_graph,UNI,1w_n_nodes,9765,
+2026-09-16 12:28:19,01_build_graph,UNI,1w_n_anchors,57,
