@@ -2,7 +2,9 @@
 
 **How Measurement Specification Determines On-Chain Concentration**
 
-Jintao Liu and Zhimo Ji · School of Computing and Information Systems, The University of Melbourne
+Jintao Liu\*, Zhimo Ji\* and Xuzhe Lin · \*School of Computing and Information Systems, The University of Melbourne · School of Mathematics and Statistics, The University of Sydney
+
+\* Equal contribution
 
 [![arXiv](https://img.shields.io/badge/arXiv-2609.24176-b31b1b.svg)](https://arxiv.org/abs/2609.24176)
 
@@ -143,7 +145,7 @@ design, including blinding and a calibration check on the verifier.
 @article{liu2026sameledger,
   title   = {The Same Ledger, Different Verdicts: How Measurement Specification
              Determines On-Chain Concentration},
-  author  = {Liu, Jintao and Ji, Zhimo},
+  author  = {Liu, Jintao and Ji, Zhimo and Lin, Xuzhe},
   journal = {arXiv preprint arXiv:2609.24176},
   year    = {2026}
 }
